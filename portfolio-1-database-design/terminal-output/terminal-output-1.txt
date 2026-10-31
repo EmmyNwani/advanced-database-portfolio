@@ -1,0 +1,119 @@
+mmy@Emmys-MacBookPro portfolio-1-database-design % ll                    
+Permissions Size User     Date Modified Git Name
+.rw-r--r--@   30 doitlady 31 Oct 02:44   -- 󰂺 README.md
+.rw-r--r--@ 3.4k doitlady 31 Oct 03:47   -N  schema.sql
+emmy@Emmys-MacBookPro portfolio-1-database-design % cd ..                                    
+emmy@Emmys-MacBookPro advanced-database-portfolio % ll
+Permissions Size User     Date Modified Git Name
+.rw-r--r--@ 8.2k doitlady 31 Oct 03:03   -N  .DS_Store
+drwxr-xr-x@    - doitlady 31 Oct 03:44   -I  .git
+drwxr-xr-x@    - doitlady 31 Oct 03:47   -N  portfolio-1-database-design
+drwxr-xr-x@    - doitlady 31 Oct 03:43   --  portfolio-2-query-optimisation
+drwxr-xr-x@    - doitlady 31 Oct 03:43   --  portfolio-3-transactions-concurrency
+drwxr-xr-x@    - doitlady 31 Oct 03:43   --  portfolio-4-nosql
+drwxr-xr-x@    - doitlady 31 Oct 03:43   --  portfolio-5-distributed-cloud
+.rw-r--r--@   47 doitlady 31 Oct 02:44   -- 󰂺 README.md
+emmy@Emmys-MacBookPro advanced-database-portfolio % ..                                   
+emmy@Emmys-MacBookPro emmy % cd - 
+/Users/emmy/advanced-database-portfolio
+emmy@Emmys-MacBookPro advanced-database-portfolio % docker init --help                   
+Usage:  docker init [OPTIONS]
+
+Creates Docker-related starter files for your project
+
+Options:
+      --version   Display version of the init plugin
+emmy@Emmys-MacBookPro advanced-database-portfolio % docker run --name pg-bank -e POSTGRES_PASSWORD=choose_a_password \
+  -p 5432:5432 -d postgres:16
+Unable to find image 'postgres:16' locally
+16: Pulling from library/postgres
+0c662641eb4e: Pull complete 
+2b70e040f7d1: Pull complete 
+1666717a30cc: Pull complete 
+b432fb757bf0: Pull complete 
+d24ad6406b14: Pull complete 
+284c79db9f3e: Pull complete 
+50dc702eaf05: Pull complete 
+cfd0730e8b44: Pull complete 
+e8d8b84da68a: Pull complete 
+cf2bffa63afa: Pull complete 
+8efed7921649: Pull complete 
+97f9b0a89f6b: Pull complete 
+799ec0c29631: Pull complete 
+d056b4173d10: Pull complete 
+ab7891223b6e: Download complete 
+81416a431855: Download complete 
+Digest: sha256:1beaa3084eee2676f20a9cd9928f0bf2c5bf674f8e49f81017912183d377c61c
+Status: Downloaded newer image for postgres:16
+cb8dd1db0cdc301d03dccfe9b1d667b87cc9543940bee59e50ccb2e5be370b97
+emmy@Emmys-MacBookPro advanced-database-portfolio % 
+emmy@Emmys-MacBookPro advanced-database-portfolio % 
+emmy@Emmys-MacBookPro advanced-database-portfolio % 
+emmy@Emmys-MacBookPro advanced-database-portfolio % 
+emmy@Emmys-MacBookPro advanced-database-portfolio % 
+emmy@Emmys-MacBookPro advanced-database-portfolio % docker images                                                     
+                                                                                                                                            i Info →   U  In Use
+IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+hello-world:latest   c567b231f656       22.6kB         10.3kB    U   
+postgres:16          1beaa3084eee        663MB          165MB    U   
+emmy@Emmys-MacBookPro advanced-database-portfolio % docker ps    
+CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+cb8dd1db0cdc   postgres:16   "docker-entrypoint.s…"   6 minutes ago   Up 6 minutes   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   pg-bank
+emmy@Emmys-MacBookPro advanced-database-portfolio % docker exec -it pg-bank psql -U postgres -c "CREATE DATABASE paybridge;"
+docker exec -i pg-bank psql -U postgres -d paybridge \
+  < portfolio-1-database-design/schema.sql
+CREATE DATABASE
+
+What's next:
+    Try Docker Debug for seamless, persistent debugging tools in any container or image → docker debug pg-bank
+    Learn more at https://docs.docker.com/go/debug-cli/
+DROP TABLE
+NOTICE:  table "audit_log" does not exist, skipping
+NOTICE:  table "transactions" does not exist, skipping
+NOTICE:  table "transfers" does not exist, skipping
+NOTICE:  table "accounts" does not exist, skipping
+NOTICE:  table "account_types" does not exist, skipping
+NOTICE:  table "customers" does not exist, skipping
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 2
+emmy@Emmys-MacBookPro advanced-database-portfolio % docker exec -it pg-bank psql -U postgres -d paybridge -c "\dt"
+docker exec -it pg-bank psql -U postgres -d paybridge -c "\d accounts"
+             List of relations
+ Schema |     Name      | Type  |  Owner   
+--------+---------------+-------+----------
+ public | account_types | table | postgres
+ public | accounts      | table | postgres
+ public | audit_log     | table | postgres
+ public | customers     | table | postgres
+ public | transactions  | table | postgres
+ public | transfers     | table | postgres
+(6 rows)
+
+
+What's next:
+    Try Docker Debug for seamless, persistent debugging tools in any container or image → docker debug pg-bank
+    Learn more at https://docs.docker.com/go/debug-cli/
+
+What's next:
+    Try Docker Debug for seamless, persistent debugging tools in any container or image → docker debug pg-bank
+    Learn more at https://docs.docker.com/go/debug-cli/
+emmy@Emmys-MacBookPro advanced-database-portfolio % git add portfolio-1-database-design
+git commit -m "Load schema into Postgres"                              
+git push
+[main f023200] Load schema into Postgres
+ 1 file changed, 74 insertions(+)
+ create mode 100644 portfolio-1-database-design/schema.sql
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 10 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 1.50 KiB | 1.50 MiB/s, done.
+Total 4 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+To https://github.com/EmmyNwani/advanced-database-portfolio.git
+   5180825..f023200  main -> main
