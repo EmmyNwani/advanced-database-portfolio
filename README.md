@@ -1,6 +1,6 @@
 # MIT 8103 Advanced Database Systems Portfolio
 
-**Student:** Emmanuel Ugochukwu Nwani
+**Student:** Ugochukwu Emmanuel Nwani
 
 **Student ID:** 301930571
 
