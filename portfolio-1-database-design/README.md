@@ -22,6 +22,10 @@
 
 ## 2. ER diagram
 
+![Banking database ER diagram](ER%20Diagram/banking_database_er_diagram.png)
+
+[View the PNG](ER%20Diagram/banking_database_er_diagram.png) · [View the SVG](ER%20Diagram/banking_database_er_diagram.svg)
+
 ```mermaid
 erDiagram
     CUSTOMERS ||--o{ ACCOUNTS : owns
