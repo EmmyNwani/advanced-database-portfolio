@@ -1,6 +1,6 @@
 -- MIT 8103 Portfolio 1: Database Design and Modelling
 -- Case study: PayBridge Microfinance Bank (simulated digital bank)
--- Target: PostgreSQL 16 (run in Docker). Starter draft: review, test and adapt it.
+-- Target: PostgreSQL 16 (run in Docker).
 -- Note: secondary indexes are deliberately omitted here so that Portfolio 2
 -- can show query plans before and after indexing.
 
