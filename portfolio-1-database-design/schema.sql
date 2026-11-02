@@ -52,10 +52,18 @@ CREATE TABLE transactions (
     account_id     BIGINT NOT NULL REFERENCES accounts(account_id),
     transfer_id    BIGINT REFERENCES transfers(transfer_id),  -- NULL for deposits/withdrawals
     txn_type       VARCHAR(12) NOT NULL
-                   CHECK (txn_type IN ('DEPOSIT', 'WITHDRAWAL', 'TRANSFER_OUT', 'TRANSFER_IN', 'REVERSAL')),
+                   CHECK (txn_type IN ('DEPOSIT', 'WITHDRAWAL', 'TRANSFER_OUT', 'TRANSFER_IN',
+                                       'REVERSAL_OUT', 'REVERSAL_IN')),
     amount         NUMERIC(15,2) NOT NULL CHECK (amount > 0),
     balance_after  NUMERIC(15,2) NOT NULL CHECK (balance_after >= 0),
-    created_at     TIMESTAMPTZ NOT NULL DEFAULT now()
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+    -- deposits/withdrawals have no transfer; every transfer-related row must have one
+    CONSTRAINT chk_txn_transfer_link CHECK (
+        (txn_type IN ('DEPOSIT', 'WITHDRAWAL') AND transfer_id IS NULL)
+        OR (txn_type NOT IN ('DEPOSIT', 'WITHDRAWAL') AND transfer_id IS NOT NULL)
+    ),
+    -- at most one row of each type per transfer (so at most 4 rows per transfer)
+    CONSTRAINT uq_txn_transfer_type UNIQUE (transfer_id, txn_type)
 );
 
 CREATE TABLE audit_log (
