@@ -1,7 +1,11 @@
 # MIT 8103 Advanced Database Systems Portfolio
 
 **Student:** Emmanuel Ugochukwu Nwani
-**Programme:** Master of Information Technology, MIVA Open University (2026/2027, First Semester CA)
+
+**Student ID:** 301930571
+
+**Programme:** Master of Information Technology, MIVA Open University (2026/2027, First Semester CA) 
+
 **Case study:** PayBridge Microfinance Bank, a simulated digital bank
 
 This repository holds the practical evidence for all five portfolio activities plus the final documentation. Everything uses one case study consistently: a bank where the ledger needs strict ACID guarantees, while data that tolerates eventual consistency is modelled separately.
