@@ -1,4 +1,3 @@
-# portfolio-1-database-design
 # Portfolio 1: Database Design and Modelling
 
 ## 1. Case study
@@ -22,9 +21,9 @@
 
 ## 2. ER diagram
 
-![Banking database ER diagram](ER%20Diagram/banking_database_er_diagram.png)
+![Banking database ER diagram](er-diagram/banking_database_er_diagram.png)
 
-[View the PNG](ER%20Diagram/banking_database_er_diagram.png) · [View the SVG](ER%20Diagram/banking_database_er_diagram.svg)
+[View the PNG](er-diagram/banking_database_er_diagram.png) · [View the SVG](er-diagram/banking_database_er_diagram.svg)
 
 ```mermaid
 erDiagram
@@ -94,7 +93,7 @@ erDiagram
 - One account type classifies many accounts.
 - One account has many ledger transactions.
 - A transfer has exactly one sending and one receiving account; an account can send or receive many transfers.
-- A completed transfer produces two transactions (a debit and a credit). Deposits and withdrawals have no transfer, so `transactions.transfer_id` is nullable.
+- A completed transfer produces two transactions (`TRANSFER_OUT` and `TRANSFER_IN`). If it is later reversed, two more rows are added (`REVERSAL_OUT` and `REVERSAL_IN`), so a transfer has at most four ledger rows. Deposits and withdrawals have no transfer, so `transactions.transfer_id` is nullable.
 
 ## 3. Relational schema, keys and constraints
 
@@ -106,7 +105,7 @@ Full DDL: [`schema.sql`](schema.sql).
 | account_types | type_code | none | none | min_balance >= 0, daily_limit > 0 |
 | accounts | account_id | customer_id, type_code | account_no | balance >= 0; status in (ACTIVE, FROZEN, CLOSED) |
 | transfers | transfer_id | from_account, to_account | none | amount > 0; from_account <> to_account; status in (PENDING, COMPLETED, FAILED, REVERSED) |
-| transactions | txn_id | account_id, transfer_id (nullable) | none | amount > 0; balance_after >= 0; txn_type in (DEPOSIT, WITHDRAWAL, TRANSFER_OUT, TRANSFER_IN, REVERSAL) |
+| transactions | txn_id | account_id, transfer_id (nullable) | (transfer_id, txn_type) | amount > 0; balance_after >= 0; txn_type in (DEPOSIT, WITHDRAWAL, TRANSFER_OUT, TRANSFER_IN, REVERSAL_OUT, REVERSAL_IN); deposits and withdrawals must have no transfer_id, all other types must have one |
 | audit_log | audit_id | none | none | action in (INSERT, UPDATE, DELETE) |
 
 **Design choices**
@@ -134,12 +133,27 @@ In each case the redundancy is intentional, and the risk is that the stored valu
 
 **Possible future refinement:** `accounts.currency` could become a reference table if the bank supports multiple currencies with their own rules.
 
-## 5. Evidence
+## 5. How to run and test
 
-- `schema.sql` loaded into PostgreSQL 16 (Docker): see `screenshots/`.
-- Table description of `accounts` showing keys, constraints and foreign keys.
-- Constraint test: an insert with a negative balance is rejected by the CHECK constraint.
+From the repository root, with the `pg-bank` container running:
 
-## 6. Reflection (write in your own words)
+```bash
+docker exec -i pg-bank psql -U postgres -d paybridge < portfolio-1-database-design/schema.sql
+docker exec -it pg-bank psql -U postgres -d paybridge -c "\dt"
+docker exec -it pg-bank psql -U postgres -d paybridge -c "\d accounts"
+```
 
-Note your own design choices, anything you changed from the first draft and why, a problem you hit, and what you learned.
+## 6. Evidence
+
+| File | Shows |
+|---|---|
+| [`screenshots/01-tables-list.png`](screenshots/01-tables-list.png) | All six tables created in the `paybridge` database |
+| [`screenshots/02-accounts-structure.png`](screenshots/02-accounts-structure.png) | `accounts` columns, keys, CHECK and foreign key constraints |
+| [`screenshots/03-transfer-reconciliation.png`](screenshots/03-transfer-reconciliation.png) | Query checking that every completed transfer has exactly two ledger rows |
+| [`screenshots/04-accounts-structure-repeat.png`](screenshots/04-accounts-structure-repeat.png) | `accounts` structure after a container restart |
+| [`outputs/01-docker-setup.txt`](outputs/01-docker-setup.txt) | Starting PostgreSQL 16 in Docker |
+| [`outputs/02-restart-and-list-tables.txt`](outputs/02-restart-and-list-tables.txt) | Container restart and table list |
+
+## 7. Reflection
+
+<!-- Reflection to be written -->
