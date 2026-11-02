@@ -48,7 +48,7 @@ Each folder has its own README explaining how that activity was implemented and 
 
 | Portfolio | Topic | Status | Where to look |
 |---|---|---|---|
-| 1 | Database design and modelling | Complete | `portfolio-1-database-design/` (ER diagram, `schema.sql`, normalisation notes, screenshots) |
+| 1 | Database design and modelling | Complete (reflection pending) | `portfolio-1-database-design/` (`er-diagram/`, `schema.sql`, normalisation in README, `screenshots/`, `outputs/`) |
 | 2 | Query processing and optimisation | In progress | `portfolio-2-query-optimisation/` (`seed.sql`, `queries.sql`, `indexes.sql`, before/after plans) |
 | 3 | Transactions and concurrency | Planned | `portfolio-3-transactions-concurrency/` |
 | 4 | NoSQL and advanced data models | Planned | `portfolio-4-nosql/` |
@@ -58,7 +58,7 @@ Each folder has its own README explaining how that activity was implemented and 
 
 **Portfolio 1: Database design and modelling.** Relational design for the bank in 3NF with deliberate, documented denormalisation (`accounts.balance`, `transactions.balance_after`). Money is stored as `NUMERIC(15,2)`, business rules are enforced with `CHECK`, foreign key and unique constraints, and secondary indexes are intentionally left out for Portfolio 2.
 
-**Portfolio 2: Query processing and optimisation.** Seed data of roughly 20,000 customers, 30,000 accounts, 50,000 transfers and 190,000 transactions. Six benchmark queries covering point lookups, joins, aggregation and a window function. Execution plans are captured with `EXPLAIN (ANALYZE, BUFFERS)` before and after adding indexes, with a short analysis of each result.
+**Portfolio 2: Query processing and optimisation.** *In progress:* seed data of roughly 20,000 customers, 30,000 accounts, 50,000 transfers and 190,000 transactions; six benchmark queries covering point lookups, joins, aggregation and a window function; execution plans captured with `EXPLAIN (ANALYZE, BUFFERS)` before and after adding indexes, with a short analysis of each result.
 
 | Query | Before (plan, ms) | After (plan, ms) | Notes |
 |---|---|---|---|
@@ -91,7 +91,7 @@ docker exec -it pg-bank psql -U postgres -c "CREATE DATABASE paybridge;"
 docker exec -i pg-bank psql -U postgres -d paybridge \
   < portfolio-1-database-design/schema.sql
 
-# 4. Portfolio 2: load seed data
+# 4. Portfolio 2: load seed data (once seed.sql is added)
 docker exec -i pg-bank psql -U postgres -d paybridge \
   < portfolio-2-query-optimisation/seed.sql
 ```
@@ -99,35 +99,39 @@ docker exec -i pg-bank psql -U postgres -d paybridge \
 Then follow the README inside each portfolio folder. Do not commit passwords; use a placeholder or an ignored `.env` file.
 
 ## 6. Technical reflection
-## Cover
+
+### Why ACID for the ledger
 
 ACID is used for the ledger to ensure that transaction data stays **Atomic, Consistent, Isolated, and Durable**, maintaining data integrity and reliability.
 
-## Challenges
+### Challenges
 
 One of the challenges encountered was starting PostgreSQL using Docker.
 
-### Terminal Output (Error)
+#### Starting PostgreSQL in Docker
 
-```bash
-    emmy@Emmys-MacBookPro advanced-database-portfolio % docker run --name pg-bank -e POSTGRES_PASSWORD=choose_a_password \
-       -p 5432:5432 -d postgres:16
+Error:
 
-    failed to connect to the docker API at unix:///var/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /var/run/docker.sock: connect: no such file or directory
+```text
+$ docker run --name pg-bank -e POSTGRES_PASSWORD=<your_password> \
+  -p 5432:5432 -d postgres:16
+
+failed to connect to the docker API at unix:///var/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /var/run/docker.sock: connect: no such file or directory
 ```
 
-Fix:
+Fix: start Docker Desktop, confirm the daemon is running, then run the container again.
+
 ```bash
-    emmy@Emmys-MacBookPro advanced-database-portfolio % open -a Docker
+open -a Docker
 
-    emmy@Emmys-MacBookPro advanced-database-portfolio % docker info
+docker info
 
-    # After confirming Docker was running:
+# After confirming Docker was running:
 
-    emmy@Emmys-MacBookPro advanced-database-portfolio % docker run --name pg-bank -e POSTGRES_PASSWORD=choose_a_password \
-    -p 5432:5432 -d postgres:16
+docker run --name pg-bank -e POSTGRES_PASSWORD=<your_password> \
+  -p 5432:5432 -d postgres:16
 
-    # Expected output: container ID
+# Expected output: container ID
 ```
 
 ## 7. AI use declaration
