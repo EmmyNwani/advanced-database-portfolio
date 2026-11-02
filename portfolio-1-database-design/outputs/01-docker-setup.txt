@@ -23,7 +23,7 @@ Creates Docker-related starter files for your project
 
 Options:
       --version   Display version of the init plugin
-emmy@Emmys-MacBookPro advanced-database-portfolio % docker run --name pg-bank -e POSTGRES_PASSWORD=choose_a_password \
+emmy@Emmys-MacBookPro advanced-database-portfolio % docker run --name pg-bank -e POSTGRES_PASSWORD=<redacted> \
   -p 5432:5432 -d postgres:16
 Unable to find image 'postgres:16' locally
 16: Pulling from library/postgres
