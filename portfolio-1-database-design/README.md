@@ -149,8 +149,11 @@ docker exec -it pg-bank psql -U postgres -d paybridge -c "\d accounts"
 |---|---|
 | [`screenshots/01-tables-list.png`](screenshots/01-tables-list.png) | All six tables created in the `paybridge` database |
 | [`screenshots/02-accounts-structure.png`](screenshots/02-accounts-structure.png) | `accounts` columns, keys, CHECK and foreign key constraints |
-| [`screenshots/03-transfer-reconciliation.png`](screenshots/03-transfer-reconciliation.png) | Query checking that every completed transfer has exactly two ledger rows |
+| [`screenshots/03-transfer-reconciliation.png`](screenshots/03-transfer-reconciliation.png) | Reconciliation query written and run on the empty schema |
 | [`screenshots/04-accounts-structure-repeat.png`](screenshots/04-accounts-structure-repeat.png) | `accounts` structure after a container restart |
+| [`screenshots/05-schema-reload-constraints.png`](screenshots/05-schema-reload-constraints.png) | Updated schema reloaded; `transactions` now has `chk_txn_transfer_link` and `uq_txn_transfer_type` |
+| [`screenshots/06-negative-balance-rejected.png`](screenshots/06-negative-balance-rejected.png) | Seed data loaded (20,000 customers, 30,000 accounts, 50,000 transfers, 190,800 transactions); setting a balance to -100 is rejected by `accounts_balance_check` |
+| [`screenshots/07-transfer-reconciliation-seeded.png`](screenshots/07-transfer-reconciliation-seeded.png) | Reconciliation on the seeded data: no completed transfer is missing its two ledger rows (0 rows) |
 | [`outputs/01-docker-setup.txt`](outputs/01-docker-setup.txt) | Starting PostgreSQL 16 in Docker |
 | [`outputs/02-restart-and-list-tables.txt`](outputs/02-restart-and-list-tables.txt) | Container restart and table list |
 
