@@ -1,0 +1,17 @@
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+VACUUM
+             index_name              |  table_name  |  size   
+-------------------------------------+--------------+---------
+ idx_transactions_account_created    | transactions | 5904 kB
+ idx_transfers_completed_date_sender | transfers    | 2144 kB
+ idx_accounts_type_balance           | accounts     | 1200 kB
+ idx_transfers_initiated             | transfers    | 1112 kB
+ idx_accounts_customer               | accounts     | 608 kB
+ idx_transfers_failed_sender         | transfers    | 96 kB
+(6 rows)
+
