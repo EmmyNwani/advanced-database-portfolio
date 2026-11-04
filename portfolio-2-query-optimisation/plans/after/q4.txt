@@ -1,0 +1,38 @@
+                                                                                             QUERY PLAN                                                                                             
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=2497.93..2497.96 rows=10 width=61) (actual time=13.190..13.193 rows=10 loops=1)
+   Buffers: shared hit=995
+   ->  Sort  (cost=2497.93..2511.27 rows=5334 width=61) (actual time=13.189..13.191 rows=10 loops=1)
+         Sort Key: (sum(tr.amount)) DESC
+         Sort Method: top-N heapsort  Memory: 26kB
+         Buffers: shared hit=995
+         ->  HashAggregate  (cost=2315.99..2382.67 rows=5334 width=61) (actual time=11.896..12.591 rows=4553 loops=1)
+               Group Key: c.customer_id
+               Batches: 1  Memory Usage: 2257kB
+               Buffers: shared hit=992
+               ->  Hash Join  (cost=1672.65..2275.99 rows=5334 width=29) (actual time=7.209..10.284 rows=5414 loops=1)
+                     Hash Cond: (c.customer_id = a.customer_id)
+                     Buffers: shared hit=992
+                     ->  Seq Scan on customers c  (cost=0.00..475.00 rows=20000 width=21) (actual time=0.002..1.218 rows=20000 loops=1)
+                           Buffers: shared hit=275
+                     ->  Hash  (cost=1605.97..1605.97 rows=5334 width=16) (actual time=7.186..7.187 rows=5414 loops=1)
+                           Buckets: 8192  Batches: 1  Memory Usage: 356kB
+                           Buffers: shared hit=717
+                           ->  Hash Join  (cost=1357.29..1605.97 rows=5334 width=16) (actual time=5.495..6.623 rows=5414 loops=1)
+                                 Hash Cond: (tr.from_account = a.account_id)
+                                 Buffers: shared hit=717
+                                 ->  Index Only Scan using idx_transfers_completed_date_sender on transfers tr  (cost=0.29..234.97 rows=5334 width=16) (actual time=0.015..0.425 rows=5414 loops=1)
+                                       Index Cond: ((initiated_at >= '2026-10-01 00:00:00+00'::timestamp with time zone) AND (initiated_at < '2026-11-01 00:00:00+00'::timestamp with time zone))
+                                       Heap Fetches: 0
+                                       Buffers: shared hit=35
+                                 ->  Hash  (cost=982.00..982.00 rows=30000 width=16) (actual time=5.406..5.407 rows=30000 loops=1)
+                                       Buckets: 32768  Batches: 1  Memory Usage: 1663kB
+                                       Buffers: shared hit=682
+                                       ->  Seq Scan on accounts a  (cost=0.00..982.00 rows=30000 width=16) (actual time=0.158..2.468 rows=30000 loops=1)
+                                             Buffers: shared hit=682
+ Planning:
+   Buffers: shared hit=350
+ Planning Time: 0.577 ms
+ Execution Time: 13.443 ms
+(34 rows)
+

@@ -1,0 +1,31 @@
+                                                                                   QUERY PLAN                                                                                   
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=2835.96..2838.90 rows=1176 width=55) (actual time=11.383..11.436 rows=1202 loops=1)
+   Sort Key: tr.initiated_at DESC
+   Sort Method: quicksort  Memory: 150kB
+   Buffers: shared hit=1389
+   ->  Hash Join  (cost=2714.29..2775.98 rows=1176 width=55) (actual time=10.407..11.190 rows=1202 loops=1)
+         Hash Cond: (tr.to_account = r.account_id)
+         Buffers: shared hit=1386
+         ->  Hash Join  (cost=1357.29..1415.90 rows=1176 width=52) (actual time=5.165..5.596 rows=1202 loops=1)
+               Hash Cond: (tr.from_account = s.account_id)
+               Buffers: shared hit=704
+               ->  Index Scan Backward using idx_transfers_initiated on transfers tr  (cost=0.29..55.81 rows=1176 width=49) (actual time=0.012..0.118 rows=1202 loops=1)
+                     Index Cond: ((initiated_at >= '2026-10-25 00:00:00+00'::timestamp with time zone) AND (initiated_at < '2026-11-01 00:00:00+00'::timestamp with time zone))
+                     Buffers: shared hit=22
+               ->  Hash  (cost=982.00..982.00 rows=30000 width=19) (actual time=5.083..5.083 rows=30000 loops=1)
+                     Buckets: 32768  Batches: 1  Memory Usage: 1897kB
+                     Buffers: shared hit=682
+                     ->  Seq Scan on accounts s  (cost=0.00..982.00 rows=30000 width=19) (actual time=0.038..1.877 rows=30000 loops=1)
+                           Buffers: shared hit=682
+         ->  Hash  (cost=982.00..982.00 rows=30000 width=19) (actual time=5.165..5.166 rows=30000 loops=1)
+               Buckets: 32768  Batches: 1  Memory Usage: 1897kB
+               Buffers: shared hit=682
+               ->  Seq Scan on accounts r  (cost=0.00..982.00 rows=30000 width=19) (actual time=0.163..2.155 rows=30000 loops=1)
+                     Buffers: shared hit=682
+ Planning:
+   Buffers: shared hit=354
+ Planning Time: 0.634 ms
+ Execution Time: 11.581 ms
+(27 rows)
+

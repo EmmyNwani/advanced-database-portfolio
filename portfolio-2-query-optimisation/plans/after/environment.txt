@@ -1,0 +1,17 @@
+Phase: after
+Captured: 2026-11-04 06:54:25 CST
+Host: Darwin arm64
+PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+effective_cache_size = 524288 8kB
+max_parallel_workers_per_gather = 2
+random_page_cost = 4
+shared_buffers = 16384 8kB
+work_mem = 4096 kB
+
+Secondary indexes present:
+  idx_accounts_customer
+  idx_accounts_type_balance
+  idx_transactions_account_created
+  idx_transfers_completed_date_sender
+  idx_transfers_failed_sender
+  idx_transfers_initiated

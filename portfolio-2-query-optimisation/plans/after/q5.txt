@@ -1,0 +1,33 @@
+                                                                                QUERY PLAN                                                                                 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=341153.77..341203.77 rows=20000 width=29) (actual time=38.453..38.455 rows=38 loops=1)
+   Sort Key: (count(*)) DESC, c.customer_id
+   Sort Method: quicksort  Memory: 27kB
+   Buffers: shared hit=120386
+   ->  Nested Loop  (cost=16.94..339725.00 rows=20000 width=29) (actual time=4.856..38.398 rows=38 loops=1)
+         Buffers: shared hit=120383
+         ->  Seq Scan on customers c  (cost=0.00..475.00 rows=20000 width=21) (actual time=0.007..1.270 rows=20000 loops=1)
+               Buffers: shared hit=275
+         ->  Aggregate  (cost=16.94..16.95 rows=1 width=8) (actual time=0.002..0.002 rows=0 loops=20000)
+               Filter: (count(*) >= 3)
+               Rows Removed by Filter: 1
+               Buffers: shared hit=120108
+               ->  Nested Loop  (cost=0.57..16.94 rows=1 width=0) (actual time=0.002..0.002 rows=0 loops=20000)
+                     Buffers: shared hit=120108
+                     ->  Index Scan using idx_accounts_customer on accounts a  (cost=0.29..8.32 rows=2 width=8) (actual time=0.000..0.001 rows=2 loops=20000)
+                           Index Cond: (customer_id = c.customer_id)
+                           Buffers: shared hit=60107
+                     ->  Index Only Scan using idx_transfers_failed_sender on transfers tr  (cost=0.28..4.30 rows=1 width=8) (actual time=0.000..0.000 rows=0 loops=30000)
+                           Index Cond: (from_account = a.account_id)
+                           Heap Fetches: 0
+                           Buffers: shared hit=60001
+ Planning:
+   Buffers: shared hit=303
+ Planning Time: 0.525 ms
+ JIT:
+   Functions: 11
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.217 ms, Inlining 0.000 ms, Optimization 0.155 ms, Emission 2.768 ms, Total 3.140 ms
+ Execution Time: 47.295 ms
+(29 rows)
+

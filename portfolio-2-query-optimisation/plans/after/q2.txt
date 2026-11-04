@@ -1,0 +1,25 @@
+                                                                     QUERY PLAN                                                                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=16.95..16.95 rows=2 width=50) (actual time=0.041..0.042 rows=3 loops=1)
+   Sort Key: a.account_no
+   Sort Method: quicksort  Memory: 25kB
+   Buffers: shared hit=15
+   ->  Nested Loop  (cost=0.70..16.94 rows=2 width=50) (actual time=0.024..0.028 rows=3 loops=1)
+         Buffers: shared hit=12
+         ->  Nested Loop  (cost=0.57..16.65 rows=2 width=34) (actual time=0.021..0.022 rows=3 loops=1)
+               Buffers: shared hit=6
+               ->  Index Scan using customers_email_key on customers c  (cost=0.29..8.30 rows=1 width=8) (actual time=0.012..0.012 rows=1 loops=1)
+                     Index Cond: ((email)::text = 'amaka.adeyemi16@example.com'::text)
+                     Buffers: shared hit=3
+               ->  Index Scan using idx_accounts_customer on accounts a  (cost=0.29..8.32 rows=2 width=42) (actual time=0.007..0.007 rows=3 loops=1)
+                     Index Cond: (customer_id = c.customer_id)
+                     Buffers: shared hit=3
+         ->  Index Scan using account_types_pkey on account_types t  (cost=0.13..0.15 rows=1 width=24) (actual time=0.001..0.001 rows=1 loops=3)
+               Index Cond: ((type_code)::text = (a.type_code)::text)
+               Buffers: shared hit=6
+ Planning:
+   Buffers: shared hit=436
+ Planning Time: 0.611 ms
+ Execution Time: 0.074 ms
+(21 rows)
+
