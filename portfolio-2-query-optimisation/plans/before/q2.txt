@@ -1,0 +1,31 @@
+                                                                       QUERY PLAN                                                                        
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=1070.17..1070.18 rows=2 width=50) (actual time=3.518..3.519 rows=3 loops=1)
+   Sort Key: a.account_no
+   Sort Method: quicksort  Memory: 25kB
+   Buffers: shared hit=689
+   ->  Nested Loop  (cost=8.32..1070.16 rows=2 width=50) (actual time=0.249..3.502 rows=3 loops=1)
+         Join Filter: ((t.type_code)::text = (a.type_code)::text)
+         Rows Removed by Join Filter: 1
+         Buffers: shared hit=686
+         ->  Hash Join  (cost=8.32..1069.09 rows=2 width=34) (actual time=0.242..3.494 rows=3 loops=1)
+               Hash Cond: (a.customer_id = c.customer_id)
+               Buffers: shared hit=685
+               ->  Seq Scan on accounts a  (cost=0.00..982.00 rows=30000 width=42) (actual time=0.183..1.887 rows=30000 loops=1)
+                     Buffers: shared hit=682
+               ->  Hash  (cost=8.30..8.30 rows=1 width=8) (actual time=0.038..0.038 rows=1 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                     Buffers: shared hit=3
+                     ->  Index Scan using customers_email_key on customers c  (cost=0.29..8.30 rows=1 width=8) (actual time=0.032..0.032 rows=1 loops=1)
+                           Index Cond: ((email)::text = 'amaka.adeyemi16@example.com'::text)
+                           Buffers: shared hit=3
+         ->  Materialize  (cost=0.00..1.03 rows=2 width=24) (actual time=0.002..0.002 rows=1 loops=3)
+               Buffers: shared hit=1
+               ->  Seq Scan on account_types t  (cost=0.00..1.02 rows=2 width=24) (actual time=0.003..0.003 rows=2 loops=1)
+                     Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=387
+ Planning Time: 0.464 ms
+ Execution Time: 3.549 ms
+(27 rows)
+

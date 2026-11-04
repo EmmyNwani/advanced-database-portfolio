@@ -1,0 +1,14 @@
+ customer_id |    full_name     | transfers_sent | total_sent 
+-------------+------------------+----------------+------------
+       16026 | Emeka Okafor     |              7 |  398488.60
+       15323 | Chiamaka Ibe     |              4 |  319708.81
+        7268 | Chiamaka Adeyemi |              6 |  317984.42
+         817 | Ngozi Abubakar   |              4 |  311042.92
+       14181 | Ibrahim Ibe      |              3 |  278907.29
+        1953 | Amaka Bello      |              4 |  274207.53
+       15983 | Musa Danjuma     |              4 |  257299.20
+        4370 | Chinedu Okonkwo  |              3 |  253271.69
+       11151 | Musa Eze         |              3 |  248707.94
+        9881 | Chiamaka Okafor  |              4 |  247606.84
+(10 rows)
+

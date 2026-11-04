@@ -1,0 +1,7 @@
+ account_no | type_code |   description   |  balance   | status 
+------------+-----------+-----------------+------------+--------
+ 3000000022 | CURRENT   | Current account |  861108.04 | ACTIVE
+ 3000000023 | SAVINGS   | Savings account | 1600713.79 | ACTIVE
+ 3000000024 | SAVINGS   | Savings account | 1686521.60 | ACTIVE
+(3 rows)
+

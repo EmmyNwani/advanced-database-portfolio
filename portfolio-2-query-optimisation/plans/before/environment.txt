@@ -1,0 +1,11 @@
+Phase: before
+Captured: 2026-11-03 17:25:12 CST
+Host: Darwin arm64
+PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+effective_cache_size = 524288 8kB
+max_parallel_workers_per_gather = 2
+random_page_cost = 4
+shared_buffers = 16384 8kB
+work_mem = 4096 kB
+
+Secondary indexes present:

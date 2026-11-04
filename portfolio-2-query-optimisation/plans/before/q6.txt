@@ -1,0 +1,22 @@
+                                                          QUERY PLAN                                                           
+-------------------------------------------------------------------------------------------------------------------------------
+ Incremental Sort  (cost=4553.35..6268.84 rows=30000 width=35) (actual time=30.562..30.563 rows=10 loops=1)
+   Sort Key: accounts.type_code, (rank() OVER (?))
+   Presorted Key: accounts.type_code
+   Full-sort Groups: 1  Sort Method: quicksort  Average Memory: 25kB  Peak Memory: 25kB
+   Buffers: shared hit=691
+   ->  WindowAgg  (cost=3212.90..3812.90 rows=30000 width=35) (actual time=27.780..30.510 rows=10 loops=1)
+         Run Condition: (rank() OVER (?) <= 5)
+         Buffers: shared hit=685
+         ->  Sort  (cost=3212.90..3287.90 rows=30000 width=27) (actual time=27.765..29.020 rows=30000 loops=1)
+               Sort Key: accounts.type_code, accounts.balance DESC
+               Sort Method: quicksort  Memory: 2409kB
+               Buffers: shared hit=685
+               ->  Seq Scan on accounts  (cost=0.00..982.00 rows=30000 width=27) (actual time=0.188..2.484 rows=30000 loops=1)
+                     Buffers: shared hit=682
+ Planning:
+   Buffers: shared hit=122
+ Planning Time: 0.646 ms
+ Execution Time: 30.806 ms
+(18 rows)
+

@@ -1,0 +1,38 @@
+                                                                QUERY PLAN                                                                 
+-------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=44095998.77..44096048.77 rows=20000 width=29) (actual time=47284.026..47284.030 rows=38 loops=1)
+   Sort Key: (count(*)) DESC, c.customer_id
+   Sort Method: quicksort  Memory: 27kB
+   Buffers: shared hit=23900278
+   ->  Nested Loop  (cost=2204.68..44094570.00 rows=20000 width=29) (actual time=2531.719..47283.876 rows=38 loops=1)
+         Buffers: shared hit=23900275
+         ->  Seq Scan on customers c  (cost=0.00..475.00 rows=20000 width=21) (actual time=0.008..4.373 rows=20000 loops=1)
+               Buffers: shared hit=275
+         ->  Aggregate  (cost=2204.68..2204.69 rows=1 width=8) (actual time=2.364..2.364 rows=0 loops=20000)
+               Filter: (count(*) >= 3)
+               Rows Removed by Filter: 1
+               Buffers: shared hit=23900000
+               ->  Hash Join  (cost=1057.03..2204.68 rows=1 width=0) (actual time=2.221..2.362 rows=0 loops=20000)
+                     Hash Cond: (tr.from_account = a.account_id)
+                     Buffers: shared hit=23900000
+                     ->  Seq Scan on transfers tr  (cost=0.00..1138.00 rows=3678 width=8) (actual time=0.005..1.515 rows=3617 loops=20000)
+                           Filter: ((status)::text = 'FAILED'::text)
+                           Rows Removed by Filter: 46383
+                           Buffers: shared hit=10260000
+                     ->  Hash  (cost=1057.00..1057.00 rows=2 width=8) (actual time=0.656..0.656 rows=2 loops=20000)
+                           Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                           Buffers: shared hit=13640000
+                           ->  Seq Scan on accounts a  (cost=0.00..1057.00 rows=2 width=8) (actual time=0.344..0.656 rows=2 loops=20000)
+                                 Filter: (customer_id = c.customer_id)
+                                 Rows Removed by Filter: 29998
+                                 Buffers: shared hit=13640000
+ Planning:
+   Buffers: shared hit=211
+ Planning Time: 0.432 ms
+ JIT:
+   Functions: 18
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 0.351 ms, Inlining 40.530 ms, Optimization 19.894 ms, Emission 17.301 ms, Total 78.076 ms
+ Execution Time: 47299.531 ms
+(34 rows)
+

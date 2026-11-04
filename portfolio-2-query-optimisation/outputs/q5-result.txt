@@ -1,0 +1,42 @@
+ customer_id |    full_name     | failed_transfers 
+-------------+------------------+------------------
+        3806 | Tunde Abubakar   |                4
+        4247 | Aisha Lawal      |                4
+       14987 | Chinedu Balogun  |                4
+       17205 | Musa Okonkwo     |                4
+       18887 | Chiamaka Okafor  |                4
+        1033 | Ibrahim Eze      |                3
+        3556 | Musa Nwosu       |                3
+        3999 | Ngozi Adeyemi    |                3
+        4041 | Emeka Okonkwo    |                3
+        4332 | Musa Okafor      |                3
+        4580 | Ngozi Abubakar   |                3
+        4981 | Segun Okonkwo    |                3
+        7442 | Yetunde Lawal    |                3
+        9147 | Segun Ibe        |                3
+       10180 | Ngozi Lawal      |                3
+       10249 | Tunde Danjuma    |                3
+       10477 | Amaka Eze        |                3
+       10609 | Emeka Ibe        |                3
+       10791 | Aisha Okafor     |                3
+       11318 | Chiamaka Eze     |                3
+       11558 | Emeka Okonkwo    |                3
+       11573 | Ibrahim Balogun  |                3
+       13033 | Ngozi Bello      |                3
+       13190 | Amaka Ibe        |                3
+       13465 | Musa Balogun     |                3
+       13705 | Chinedu Bello    |                3
+       14224 | Musa Lawal       |                3
+       14812 | Musa Abubakar    |                3
+       14996 | Emeka Nwosu      |                3
+       15863 | Yetunde Ibe      |                3
+       15911 | Musa Ojo         |                3
+       16159 | Amaka Okonkwo    |                3
+       16479 | Aisha Ojo        |                3
+       16979 | Ngozi Danjuma    |                3
+       17333 | Chiamaka Adeyemi |                3
+       19070 | Emeka Nwosu      |                3
+       19355 | Aisha Okafor     |                3
+       19528 | Tunde Danjuma    |                3
+(38 rows)
+
