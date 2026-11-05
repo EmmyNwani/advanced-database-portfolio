@@ -1,0 +1,102 @@
+=== Starting state
+ account_id | type_code | status |  balance   
+------------+-----------+--------+------------
+          1 | SAVINGS   | ACTIVE | 1744056.70
+          3 | SAVINGS   | ACTIVE | 1657228.23
+          6 | CURRENT   | ACTIVE | 1800297.75
+          9 | CURRENT   | ACTIVE | 1479844.54
+         28 | CURRENT   | FROZEN | 1858309.11
+         38 | SAVINGS   | CLOSED |  343750.73
+
+
+=== Part A: guardrails (each call should fail)
+--- A1: negative amount
+ERROR:  Transfer amount must be positive (got -50.00)
+CONTEXT:  PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 14 at RAISE
+--- A2: same account
+ERROR:  Cannot transfer from account 1 to itself
+CONTEXT:  PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 17 at RAISE
+--- A3: account does not exist
+ERROR:  Account 999999 does not exist
+CONTEXT:  PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 28 at RAISE
+--- A4: source account FROZEN (28)
+ERROR:  Source account 28 is FROZEN
+CONTEXT:  PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 39 at RAISE
+--- A5: destination account CLOSED (38)
+ERROR:  Destination account 38 is CLOSED
+CONTEXT:  PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 42 at RAISE
+--- A6: insufficient funds (account 6 holds about 1.8 million)
+ERROR:  Insufficient funds in account 6: balance 1800297.75, transfer 2000000.00
+CONTEXT:  PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 55 at RAISE
+--- A7: daily limit (SAVINGS limit is 500,000)
+ERROR:  Daily limit exceeded for account 3: sent today 0.00, limit 500000.00, requested 600000.00
+CONTEXT:  PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 67 at RAISE
+
+=== After Part A: nothing written (expect the same counts as before)
+ transfers_before | transfers_now 
+------------------+---------------
+            50001 |         50001
+
+ ledger_rows_before | ledger_rows_now 
+--------------------+-----------------
+             190802 |          190802
+
+
+=== Part B: explicit ROLLBACK
+BEGIN
+ transfer_id 
+-------------
+       50002
+
+--- Inside the transaction, the money has moved:
+ account_id |  balance   
+------------+------------
+          6 | 1799297.75
+          9 | 1480844.54
+
+ROLLBACK
+--- After ROLLBACK, the balances are back:
+ account_id |  balance   
+------------+------------
+          6 | 1800297.75
+          9 | 1479844.54
+
+
+=== Part C: a later error undoes an earlier success
+BEGIN
+ transfer_id 
+-------------
+       50003
+
+--- Second statement fails (transfer from a FROZEN account):
+ERROR:  Source account 28 is FROZEN
+CONTEXT:  PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 39 at RAISE
+--- The transaction is now aborted; COMMIT turns into ROLLBACK:
+ROLLBACK
+ account_id |  balance   
+------------+------------
+          6 | 1800297.75
+          9 | 1479844.54
+
+
+=== Part D: SAVEPOINT keeps the good work and undoes the failed part
+BEGIN
+ kept_transfer_id 
+------------------
+            50004
+
+SAVEPOINT
+ERROR:  Insufficient funds in account 6: balance 1799297.75, transfer 5000000.00
+CONTEXT:  PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 55 at RAISE
+ROLLBACK
+COMMIT
+--- The 1,000 transfer was committed; the failed one left no trace:
+ account_id |  balance   
+------------+------------
+          6 | 1799297.75
+          9 | 1480844.54
+
+ transfers_before | transfers_now 
+------------------+---------------
+            50001 |         50002
+

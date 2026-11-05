@@ -1,0 +1,36 @@
+=== Balances before
+ account_id | type_code | status |  balance   
+------------+-----------+--------+------------
+          1 | SAVINGS   | ACTIVE | 1769056.70
+          3 | SAVINGS   | ACTIVE | 1632228.23
+
+=== Transfer 25,000 from account 1 to account 3
+BEGIN
+COMMIT
+=== Balances after COMMIT
+ account_id | type_code | status |  balance   
+------------+-----------+--------+------------
+          1 | SAVINGS   | ACTIVE | 1744056.70
+          3 | SAVINGS   | ACTIVE | 1657228.23
+
+=== The transfer row
+ transfer_id | from_account | to_account |  amount  |  status   
+-------------+--------------+------------+----------+-----------
+       50001 |            1 |          3 | 25000.00 | COMPLETED
+
+=== Its two ledger rows
+ txn_id | account_id |   txn_type   |  amount  | balance_after 
+--------+------------+--------------+----------+---------------
+ 190801 |          1 | TRANSFER_OUT | 25000.00 |    1744056.70
+ 190802 |          3 | TRANSFER_IN  | 25000.00 |    1657228.23
+
+=== Audit entries written by the trigger
+ account_id | old_balance | new_balance 
+------------+-------------+-------------
+          3 | 1632228.23  | 1657228.23
+          1 | 1769056.70  | 1744056.70
+
+=== Reconciliation: stored balance equals the sum of the ledger (expect 0 rows)
+ account_id | balance | ledger_total 
+------------+---------+--------------
+

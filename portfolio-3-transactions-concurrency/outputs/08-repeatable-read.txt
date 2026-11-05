@@ -1,0 +1,10 @@
+=== REPEATABLE READ: both reads see the same snapshot
+
+--- Session A
+00:25:17.186  A  (REPEATABLE READ) first read of account 9:  1489844.54
+00:25:19.190  A  (REPEATABLE READ) second read of account 9: 1489844.54
+00:25:19.191  A  after COMMIT, account 9:             1490844.54
+
+--- Session B (started 1 second after A)
+00:25:18.039  B  transfers 1,000 from account 6 to account 9 and commits (transfer 50022)
+
