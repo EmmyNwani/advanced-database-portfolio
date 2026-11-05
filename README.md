@@ -35,7 +35,7 @@ The guiding principle is polyglot persistence: the money ledger stays ACID in Po
 ```
 advanced-database-portfolio/
 ├── portfolio-1-database-design/        ER diagram, schema, constraints, normalisation
-├── portfolio-2-query-optimisation/
+├── portfolio-2-query-optimisation/     seed data, benchmark queries, indexes, execution plans
 ├── portfolio-3-transactions-concurrency/
 ├── portfolio-4-nosql/
 ├── portfolio-5-distributed-cloud/
@@ -49,10 +49,13 @@ Each folder has its own README explaining how that activity was implemented and 
 | Portfolio | Topic | Where to look |
 |---|---|---|
 | 1 | Database design and modelling | `portfolio-1-database-design/` (`er-diagram/`, `schema.sql`, normalisation in README, `screenshots/`, `outputs/`) |
+| 2 | Query processing and optimisation | `portfolio-2-query-optimisation/` (`seed.sql`, `queries.sql`, `indexes.sql`, `q5_rewrite.sql`, `plans/`, `outputs/`) |
 
 ### Portfolio summaries
 
 **Portfolio 1: Database design and modelling.** Relational design for the bank in 3NF with deliberate, documented denormalisation (`accounts.balance`, `transactions.balance_after`). Money is stored as `NUMERIC(15,2)`, business rules are enforced with `CHECK`, foreign key and unique constraints, and secondary indexes are intentionally left out for Portfolio 2.
+
+**Portfolio 2: Query processing and optimisation.** Reproducible seed data (20,000 customers, 30,000 accounts, 50,000 transfers, 190,800 ledger rows) and six benchmark queries measured with `EXPLAIN (ANALYZE, BUFFERS)` before and after six targeted indexes, including two partial indexes and one covering index. Selective lookups improved 48× to 1,000×; join- and aggregation-heavy queries gained little, and the window-function index went unused. The slowest query, a correlated subquery, fell from 47,299 ms to 47 ms with indexes and to 19.5 ms when rewritten as a single `GROUP BY`.
 
 ## 5. How to reproduce
 
@@ -69,6 +72,10 @@ docker exec -it pg-bank psql -U postgres -c "CREATE DATABASE paybridge;"
 # 3. Portfolio 1: load the schema
 docker exec -i pg-bank psql -U postgres -d paybridge \
   < portfolio-1-database-design/schema.sql
+
+# 4. Portfolio 2: load seed data, then follow portfolio-2-query-optimisation/README.md
+docker exec -i pg-bank psql -U postgres -d paybridge \
+  < portfolio-2-query-optimisation/seed.sql
 ```
 
 Then follow the README inside each portfolio folder. Do not commit passwords; use a placeholder or an ignored `.env` file.
