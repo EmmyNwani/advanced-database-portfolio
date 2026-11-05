@@ -36,7 +36,7 @@ The guiding principle is polyglot persistence: the money ledger stays ACID in Po
 advanced-database-portfolio/
 ├── portfolio-1-database-design/        ER diagram, schema, constraints, normalisation
 ├── portfolio-2-query-optimisation/     seed data, benchmark queries, indexes, execution plans
-├── portfolio-3-transactions-concurrency/
+├── portfolio-3-transactions-concurrency/ atomic transfer, audit trigger, commit, rollback and concurrency demos
 ├── portfolio-4-nosql/
 ├── portfolio-5-distributed-cloud/
 └── README.md
@@ -50,12 +50,15 @@ Each folder has its own README explaining how that activity was implemented and 
 |---|---|---|
 | 1 | Database design and modelling | `portfolio-1-database-design/` (`er-diagram/`, `schema.sql`, normalisation in README, `screenshots/`, `outputs/`) |
 | 2 | Query processing and optimisation | `portfolio-2-query-optimisation/` (`seed.sql`, `queries.sql`, `indexes.sql`, `q5_rewrite.sql`, `plans/`, `outputs/`) |
+| 3 | Transactions and concurrency | `portfolio-3-transactions-concurrency/` (`transfer_funds.sql`, `audit_trigger.sql`, `01_commit.sql`, `02_rollback.sql`, `concurrency_demos.sh`, `outputs/`) |
 
 ### Portfolio summaries
 
 **Portfolio 1: Database design and modelling.** Relational design for the bank in 3NF with deliberate, documented denormalisation (`accounts.balance`, `transactions.balance_after`). Money is stored as `NUMERIC(15,2)`, business rules are enforced with `CHECK`, foreign key and unique constraints, and secondary indexes are intentionally left out for Portfolio 2.
 
 **Portfolio 2: Query processing and optimisation.** Reproducible seed data (20,000 customers, 30,000 accounts, 50,000 transfers, 190,800 ledger rows) and six benchmark queries measured with `EXPLAIN (ANALYZE, BUFFERS)` before and after six targeted indexes, including two partial indexes and one covering index. Selective lookups improved 48× to 1,000×; join- and aggregation-heavy queries gained little, and the window-function index went unused. The slowest query, a correlated subquery, fell from 47,299 ms to 47 ms with indexes and to 19.5 ms when rewritten as a single `GROUP BY`.
+
+**Portfolio 3: Transactions and concurrency.** An atomic `transfer_funds` function locks both accounts in `account_id` order, checks seven guardrails (amount, distinct accounts, existence, status, currency, minimum balance, daily limit) and writes the transfer, both balances and both ledger rows in one transaction, with an audit trigger recording every balance change. Eight demos, six of them run as two real concurrent sessions, show commit, rollback, an aborted transaction, `SAVEPOINT`, a lost update and its prevention with `SELECT … FOR UPDATE`, a deadlock and its prevention by lock ordering, and the difference between `READ COMMITTED` and `REPEATABLE READ`.
 
 ## 5. How to reproduce
 
@@ -76,6 +79,8 @@ docker exec -i pg-bank psql -U postgres -d paybridge \
 # 4. Portfolio 2: load seed data, then follow portfolio-2-query-optimisation/README.md
 docker exec -i pg-bank psql -U postgres -d paybridge \
   < portfolio-2-query-optimisation/seed.sql
+
+# 5. Portfolio 3: follow portfolio-3-transactions-concurrency/README.md
 ```
 
 Then follow the README inside each portfolio folder. Do not commit passwords; use a placeholder or an ignored `.env` file.
