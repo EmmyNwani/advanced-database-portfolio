@@ -58,6 +58,22 @@ restore_balance() {
     query -c "UPDATE accounts SET balance = $2 WHERE account_id = $1;"
 }
 
+# Accounts 1, 3, 6 and 9 whose stored balance differs from their ledger total
+RECONCILE_SQL="SELECT a.account_id, a.balance, l.ledger_total
+          FROM accounts a
+          JOIN (SELECT account_id,
+                       SUM(CASE WHEN txn_type IN ('DEPOSIT', 'TRANSFER_IN', 'REVERSAL_IN') THEN amount ELSE -amount END) AS ledger_total
+                FROM transactions WHERE account_id IN (1, 3, 6, 9) GROUP BY account_id) l USING (account_id)
+          WHERE a.balance <> l.ledger_total"
+
+# The demos restore the balances they find at the start, so they must start from a
+# reconciled state; otherwise an earlier interrupted run's error would be carried forward.
+if [[ -n "$(query -At -c "$RECONCILE_SQL;")" ]]; then
+    echo "Stopped: accounts 1, 3, 6 or 9 do not reconcile with the ledger. Fix them before running the demos." >&2
+    query -c "$RECONCILE_SQL;" >&2
+    exit 1
+fi
+
 # ---------------------------------------------------------------------------
 # 03 + 04: lost update on account 9 (two deposits, read-modify-write)
 # ---------------------------------------------------------------------------
@@ -187,10 +203,5 @@ run_pair "08-repeatable-read" "REPEATABLE READ: both reads see the same snapshot
 # ---------------------------------------------------------------------------
 echo
 echo "== Reconciliation for the demo accounts (expect 0 rows)"
-query -c "SELECT a.account_id, a.balance, l.ledger_total
-          FROM accounts a
-          JOIN (SELECT account_id,
-                       SUM(CASE WHEN txn_type IN ('DEPOSIT', 'TRANSFER_IN', 'REVERSAL_IN') THEN amount ELSE -amount END) AS ledger_total
-                FROM transactions WHERE account_id IN (1, 3, 6, 9) GROUP BY account_id) l USING (account_id)
-          WHERE a.balance <> l.ledger_total;"
+query -c "$RECONCILE_SQL;"
 echo "Outputs written to outputs/"

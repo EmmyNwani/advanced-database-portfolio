@@ -48,6 +48,8 @@ docker exec -i pg-bank psql -U postgres -d paybridge < portfolio-2-query-optimis
 
 Before indexing, the only indexes are those PostgreSQL creates automatically for primary keys and unique constraints. Foreign key columns are not indexed automatically.
 
+Run order matters: the benchmarks must run on a freshly loaded schema and seed. `seed.sql` does not remove the Portfolio 2 indexes, and Portfolio 3 adds transfers and ledger rows, so rerunning the benchmarks after either would not reproduce the results below. To start again, reload `schema.sql` (which drops and recreates the tables) and then `seed.sql`.
+
 ## 5. Queries and results
 
 Median of three runs (`Execution Time`), PostgreSQL 16.15 on an Apple Silicon Mac. Absolute times vary between machines; the before/after comparison is what matters.

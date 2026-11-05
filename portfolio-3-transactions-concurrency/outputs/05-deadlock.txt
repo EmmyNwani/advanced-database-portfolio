@@ -1,19 +1,19 @@
 === Deadlock: A locks 1 then 3, B locks 3 then 1
 
 --- Session A
-00:25:06.329  A  locks account 1 (debit 100)
-00:25:08.337  A  requests account 3
-00:25:10.370  A  got account 3 (credit 100)
-00:25:10.374  A  ends transaction (COMMIT if it succeeded, ROLLBACK if it was aborted)
+18:34:22.749  A  locks account 1 (debit 100)
+18:34:24.758  A  requests account 3
+18:34:26.834  A  got account 3 (credit 100)
+18:34:26.838  A  ends transaction (COMMIT if it succeeded, ROLLBACK if it was aborted)
 
 --- Session B (started 1 second after A)
-00:25:07.356  B  locks account 3 (debit 100)
-00:25:09.361  B  requests account 1
+18:34:23.814  B  locks account 3 (debit 100)
+18:34:25.823  B  requests account 1
 ERROR:  deadlock detected
-DETAIL:  Process 9433 waits for ShareLock on transaction 1335; blocked by process 9425.
-Process 9425 waits for ShareLock on transaction 1336; blocked by process 9433.
+DETAIL:  Process 12912 waits for ShareLock on transaction 2035; blocked by process 12904.
+Process 12904 waits for ShareLock on transaction 2036; blocked by process 12912.
 HINT:  See server log for query details.
-CONTEXT:  while updating tuple (340,42) in relation "accounts"
+CONTEXT:  while updating tuple (340,1) in relation "accounts"
 ERROR:  current transaction is aborted, commands ignored until end of transaction block
-00:25:10.371  B  ends transaction (COMMIT if it succeeded, ROLLBACK if it was aborted)
+18:34:26.835  B  ends transaction (COMMIT if it succeeded, ROLLBACK if it was aborted)
 

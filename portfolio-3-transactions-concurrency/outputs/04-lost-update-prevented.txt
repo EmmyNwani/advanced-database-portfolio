@@ -1,26 +1,26 @@
 === Lost update prevented: SELECT ... FOR UPDATE makes the second deposit wait
 
 --- Session A
-00:25:01.866  A  requests balance of account 9 FOR UPDATE
-00:25:01.867  A  reads balance of account 9: 1488844.54
-00:25:03.881  A  writes 1488844.54 + 1,000 (deposit of 1,000)
-00:25:03.883  A  commits
+18:34:18.263  A  requests balance of account 9 FOR UPDATE
+18:34:18.264  A  reads balance of account 9: 1480844.54
+18:34:20.279  A  writes 1480844.54 + 1,000 (deposit of 1,000)
+18:34:20.282  A  commits
 
 --- Session B (started 1 second after A)
-00:25:02.936  B  requests balance of account 9 FOR UPDATE
-00:25:03.883  B  reads balance of account 9: 1489844.54
-00:25:05.894  B  writes 1489844.54 + 500 (deposit of 500)
-00:25:05.896  B  commits
+18:34:19.317  B  requests balance of account 9 FOR UPDATE
+18:34:20.283  B  reads balance of account 9: 1481844.54
+18:34:22.301  B  writes 1481844.54 + 500 (deposit of 500)
+18:34:22.304  B  commits
 
 --- Result
-Starting balance:            1488844.54
-Expected (both deposits):    1490344.54
-Actual final balance:        1490344.54
+Starting balance:            1480844.54
+Expected (both deposits):    1482344.54
+Actual final balance:        1482344.54
 
 --- Audit log: both writes happened
  audit_id | old_balance | new_balance 
 ----------+-------------+-------------
-       79 | 1489844.54  | 1490344.54
-       78 | 1488844.54  | 1489844.54
+       13 | 1481844.54  | 1482344.54
+       12 | 1480844.54  | 1481844.54
 (2 rows)
 

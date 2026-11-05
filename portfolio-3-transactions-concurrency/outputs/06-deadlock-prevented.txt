@@ -1,14 +1,14 @@
 === Deadlock prevented: both sessions lock accounts in account_id order
 
 --- Session A
-00:25:10.608  A  requests locks on accounts 1 and 3
-00:25:10.609  A  locks accounts 1 and 3, lowest id first
-00:25:12.619  A  moves 100 from account 1 to account 3
-00:25:12.620  A  commits
+18:34:27.096  A  requests locks on accounts 1 and 3
+18:34:27.096  A  locks accounts 1 and 3, lowest id first
+18:34:29.105  A  moves 100 from account 1 to account 3
+18:34:29.106  A  commits
 
 --- Session B (started 1 second after A)
-00:25:11.623  B  requests locks on accounts 1 and 3
-00:25:12.620  B  locks accounts 1 and 3, lowest id first
-00:25:14.636  B  moves 100 from account 3 to account 1
-00:25:14.640  B  commits
+18:34:28.094  B  requests locks on accounts 1 and 3
+18:34:29.106  B  locks accounts 1 and 3, lowest id first
+18:34:31.121  B  moves 100 from account 3 to account 1
+18:34:31.123  B  commits
 

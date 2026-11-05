@@ -1,26 +1,26 @@
 === Lost update: two deposits read the same balance (plain SELECT)
 
 --- Session A
-00:24:58.531  A  requests balance of account 9 
-00:24:58.531  A  reads balance of account 9: 1488844.54
-00:25:00.549  A  writes 1488844.54 + 1,000 (deposit of 1,000)
-00:25:00.551  A  commits
+18:34:14.891  A  requests balance of account 9 
+18:34:14.891  A  reads balance of account 9: 1480844.54
+18:34:16.913  A  writes 1480844.54 + 1,000 (deposit of 1,000)
+18:34:16.915  A  commits
 
 --- Session B (started 1 second after A)
-00:24:59.577  B  requests balance of account 9 
-00:24:59.577  B  reads balance of account 9: 1488844.54
-00:25:01.588  B  writes 1488844.54 + 500 (deposit of 500)
-00:25:01.589  B  commits
+18:34:15.930  B  requests balance of account 9 
+18:34:15.931  B  reads balance of account 9: 1480844.54
+18:34:17.946  B  writes 1480844.54 + 500 (deposit of 500)
+18:34:17.948  B  commits
 
 --- Result
-Starting balance:            1488844.54
-Expected (both deposits):    1490344.54
-Actual final balance:        1489344.54
+Starting balance:            1480844.54
+Expected (both deposits):    1482344.54
+Actual final balance:        1481344.54
 
 --- Audit log: both writes happened
  audit_id | old_balance | new_balance 
 ----------+-------------+-------------
-       76 | 1489844.54  | 1489344.54
-       75 | 1488844.54  | 1489844.54
+       10 | 1481844.54  | 1481344.54
+        9 | 1480844.54  | 1481844.54
 (2 rows)
 

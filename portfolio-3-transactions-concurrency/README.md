@@ -33,6 +33,8 @@ docker exec -i pg-bank sh -c 'stdbuf -oL -eL psql -U postgres -d paybridge -X 2>
 
 `stdbuf` keeps error messages next to the statement that caused them. The demos use accounts 1 and 3 (savings), 6 and 9 (current), 28 (frozen) and 38 (closed).
 
+Run the steps once, in this order, on freshly loaded Portfolio 1 and 2 data: each demo starts from the balances the previous one left. The outputs in this folder come from a single such run. To repeat it, reload `schema.sql`, `seed.sql` and `indexes.sql` first. `concurrency_demos.sh` checks that accounts 1, 3, 6 and 9 reconcile with the ledger before it starts, and stops if they do not.
+
 ## 4. The atomic transfer and ACID
 
 `transfer_funds` does all of its work inside the caller's transaction: it inserts the transfer, debits one account, credits the other and writes both ledger rows. Every guardrail runs before any write, and a failed guardrail raises an exception.
@@ -61,6 +63,8 @@ Locking before checking matters: if the balance were read without a lock, two tr
 
 Demos 3–6 deliberately update balances directly, without ledger rows, so the script restores the original balances afterwards and finishes with a reconciliation check (expected: 0 mismatching accounts).
 
+Transfer ids in the recorded run: 50001 is the committed transfer in demo 1; 50002 and 50003 were rolled back in parts B and C of demo 2, so they never appear in the table; 50004 is the transfer kept by the savepoint in part D; 50005 and 50006 are session B's transfers in demos 7 and 8. The run ends with 50,004 transfers, and every account reconciles with its ledger.
+
 ## 6. Analysis
 
 **Commit and rollback.** Demo 1 shows atomicity in the success case: every part of the transfer appears together, and the audit trigger's entries are part of the same transaction. Demo 2 shows it in the failure cases. Each guardrail failure leaves the transfer and ledger row counts unchanged. Part B shows that changes visible inside an open transaction disappear on `ROLLBACK`. Part C is the strongest case: the first transfer succeeded, but a later statement failed, so PostgreSQL marked the whole transaction as aborted and turned `COMMIT` into `ROLLBACK`. Part D shows the controlled alternative: a `SAVEPOINT` lets the application discard only the failed step. One visible side effect: transfer ids consumed by rolled-back transfers are not reused, because sequences are deliberately not transactional, so gaps in `transfer_id` are normal.
@@ -82,6 +86,7 @@ Demos 3–6 deliberately update balances directly, without ledger rows, so the s
 - The daily limit uses the database server's date (UTC) and counts only completed outgoing transfers.
 - The concurrency demos control timing with `pg_sleep`, which makes the interleaving reproducible but is simpler than real traffic.
 - Reversals are modelled in the schema but not implemented as a function here.
+- The restore in demos 3–6 is only safe if the script runs to the end. During development an interrupted run left account 9 1,000.00 above its ledger total; the next run restored to that wrong starting balance, and the full reconciliation query caught the difference. This is why the script now checks reconciliation before it starts.
 
 ## 8. Reflection
 

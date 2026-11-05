@@ -1,10 +1,10 @@
 === READ COMMITTED: a second read inside one transaction sees B's committed change
 
 --- Session A
-00:25:14.877  A  (READ COMMITTED) first read of account 9:  1488844.54
-00:25:16.887  A  (READ COMMITTED) second read of account 9: 1489844.54
-00:25:16.892  A  after COMMIT, account 9:             1489844.54
+18:34:31.366  A  (READ COMMITTED) first read of account 9:  1480844.54
+18:34:33.375  A  (READ COMMITTED) second read of account 9: 1481844.54
+18:34:33.376  A  after COMMIT, account 9:             1481844.54
 
 --- Session B (started 1 second after A)
-00:25:15.927  B  transfers 1,000 from account 6 to account 9 and commits (transfer 50021)
+18:34:32.441  B  transfers 1,000 from account 6 to account 9 and commits (transfer 50005)
 
