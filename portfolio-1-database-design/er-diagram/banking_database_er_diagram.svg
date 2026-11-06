@@ -185,7 +185,8 @@
 <g id="edge7" class="edge">
 <title>AUDIT_LOG&#45;&gt;ACCOUNTS</title>
 <path fill="none" stroke="#9aa5b1" stroke-width="1.5" stroke-dasharray="1,5" d="M210,-232.31C210,-292.49 210,-353.5 210,-353.5 210,-353.5 394.83,-353.5 521,-353.5"/>
-<text text-anchor="middle" x="374.5" y="-206" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#34495e">polymorphic audit reference\n(no foreign key)</text>
+<text text-anchor="middle" x="374.5" y="-212" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#34495e">polymorphic audit reference</text>
+<text text-anchor="middle" x="374.5" y="-200" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#34495e">(no foreign key)</text>
 </g>
 </g>
 </svg>

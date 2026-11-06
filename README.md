@@ -8,7 +8,7 @@
 
 **Case study:** PayBridge Microfinance Bank, a simulated digital bank
 
-This repository holds the practical evidence for all five portfolio activities plus the final documentation. Everything uses one case study consistently: a bank where the ledger needs strict ACID guarantees, while data that tolerates eventual consistency is modelled separately.
+This repository holds the practical evidence for all five portfolio activities. The final 2–3 page summary is submitted with it as `Nwani_Ugochukwu_301930571_README.pdf`. Everything uses one case study consistently: a bank where the ledger needs strict ACID guarantees, while data that tolerates eventual consistency is modelled separately.
 
 ## 1. Case study summary
 
@@ -25,8 +25,8 @@ Full statement: [`portfolio-1-database-design/README.md`](portfolio-1-database-d
 | Area | Technology | Reason |
 |---|---|---|
 | Ledger (Portfolios 1-3) | PostgreSQL 16 in Docker | Full ACID, serializable isolation available, mature planner and `EXPLAIN` tooling |
-| NoSQL (Portfolio 4) | MongoDB | Flexible documents for activity/transaction logs, where eventual consistency is acceptable |
-| Distributed (Portfolio 5) | PostgreSQL primary + replica (Docker Compose) | Demonstrates replication, failover and the consistency/availability trade-off. A NewSQL system such as CockroachDB is a possible extension so as to model a distributed database setup that allows for scalability|
+| NoSQL (Portfolio 4) | MongoDB 7 in Docker | Flexible documents for customer activity events and profiles, plus a key-value session store with a TTL index, where eventual consistency is acceptable |
+| Distributed (Portfolio 5) | PostgreSQL 16 primary + streaming replica, and a three-member MongoDB replica set (Docker Compose) | Demonstrates replication, synchronous vs asynchronous commit, failover, split brain and the consistency/availability trade-off. Sharding is analysed on the seeded data, and the README places Citus and NewSQL systems such as CockroachDB on the growth path for scaling writes beyond one primary |
 
 The guiding principle is polyglot persistence: the money ledger stays ACID in PostgreSQL, and only data that tolerates BASE-style behaviour moves to NoSQL.
 
@@ -141,7 +141,12 @@ docker run --name pg-bank -e POSTGRES_PASSWORD=<your_password> \
 
 ## 8. References
 
-- PostgreSQL documentation: https://www.postgresql.org/docs/
-- MongoDB documentation: https://www.mongodb.com/docs/
-- Course materials and textbooks for MIT 8103.
-- Docker documentation: https://docs.docker.com/
+- Abadi, D. (2012). Consistency tradeoffs in modern distributed database system design: CAP is only part of the story. *IEEE Computer*, 45(2), 37–42.
+- Brewer, E. (2000). Towards robust distributed systems. Keynote, *ACM Symposium on Principles of Distributed Computing (PODC)*.
+- Elmasri, R. and Navathe, S. B. (2016). *Fundamentals of Database Systems* (7th ed.). Pearson.
+- Gilbert, S. and Lynch, N. (2002). Brewer's conjecture and the feasibility of consistent, available, partition-tolerant web services. *ACM SIGACT News*, 33(2), 51–59.
+- Kleppmann, M. (2017). *Designing Data-Intensive Applications*. O'Reilly Media.
+- PostgreSQL Global Development Group. *PostgreSQL 16 Documentation*: Using EXPLAIN (https://www.postgresql.org/docs/16/using-explain.html), Partial Indexes (https://www.postgresql.org/docs/16/indexes-partial.html), Transaction Isolation (https://www.postgresql.org/docs/16/transaction-iso.html), Explicit Locking (https://www.postgresql.org/docs/16/explicit-locking.html), High Availability, Load Balancing, and Replication (https://www.postgresql.org/docs/16/high-availability.html).
+- MongoDB, Inc. *MongoDB Manual*: Schema Validation (https://www.mongodb.com/docs/manual/core/schema-validation/), TTL Indexes (https://www.mongodb.com/docs/manual/core/index-ttl/), Replication (https://www.mongodb.com/docs/manual/replication/), Write Concern (https://www.mongodb.com/docs/manual/reference/write-concern/), Sharding (https://www.mongodb.com/docs/manual/sharding/).
+- Docker Inc. *Docker Compose documentation*: https://docs.docker.com/compose/
+- MIT 8103 Advanced Database Systems course materials, MIVA Open University.
