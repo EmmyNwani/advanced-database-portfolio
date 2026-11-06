@@ -1,0 +1,31 @@
+=== Build the cluster from scratch
+SERVICE      IMAGE         STATUS
+mongo1       mongo:7       Up 2 seconds
+mongo2       mongo:7       Up 3 seconds
+mongo3       mongo:7       Up 3 seconds
+pg-primary   postgres:16   Up 3 seconds (healthy)
+pg-replica   postgres:16   Up Less than a second
+
+20:22:12  Load Portfolio 1 schema, Portfolio 2 seed and Portfolio 3 functions into the PRIMARY only
+  table_name  |  rows  
+--------------+--------
+ customers    |  20000
+ accounts     |  30000
+ transfers    |  50000
+ transactions | 190800
+(4 rows)
+
+
+20:22:16  Row counts read from the REPLICA, which received everything through replication
+ customers | accounts | transfers | ledger_rows | total_balance  
+-----------+----------+-----------+-------------+----------------
+     20000 |    30000 |     50000 |      190800 | 37186808077.77
+(1 row)
+
+
+20:22:16  The same from the PRIMARY
+ customers | accounts | transfers | ledger_rows | total_balance  
+-----------+----------+-----------+-------------+----------------
+     20000 |    30000 |     50000 |      190800 | 37186808077.77
+(1 row)
+

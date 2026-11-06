@@ -1,0 +1,24 @@
+=== The replica serves reads but refuses writes
+
+20:22:19  Replica: a reporting query (top 3 balances by account type) runs normally
+ type_code | account_id |  balance   
+-----------+------------+------------
+ CURRENT   |      25399 | 2672541.27
+ CURRENT   |      21894 | 2580479.85
+ CURRENT   |      23708 | 2546171.33
+ SAVINGS   |       8018 | 2792331.69
+ SAVINGS   |      24531 | 2782592.21
+ SAVINGS   |       6426 | 2764915.73
+(6 rows)
+
+
+20:22:19  Replica: transfer_funds(6, 9, 100.00)
+ERROR:  cannot execute SELECT FOR UPDATE in a read-only transaction
+CONTEXT:  SQL statement "SELECT *               FROM accounts WHERE account_id = LEAST(p_from, p_to)    FOR UPDATE"
+PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 22 at SQL statement
+
+20:22:19  Replica: a direct UPDATE
+ERROR:  cannot execute UPDATE in a read-only transaction
+
+20:22:19  Replica: CREATE TABLE
+ERROR:  cannot execute CREATE TABLE in a read-only transaction

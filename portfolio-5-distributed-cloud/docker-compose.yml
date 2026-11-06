@@ -1,0 +1,66 @@
+# MIT 8103 Portfolio 5: a small distributed setup for PayBridge
+#
+#   pg-primary  PostgreSQL 16 primary (read-write)
+#   pg-replica  PostgreSQL 16 hot standby, cloned from the primary with pg_basebackup and kept
+#               up to date by streaming replication through a replication slot
+#   mongo1-3    MongoDB 7 replica set rs0 (one primary, two secondaries)
+#
+# Nothing is published to the host: every command runs inside the containers with
+# `docker compose exec`. Authentication is "trust" inside this private network, which is
+# acceptable for a lab and not for production (see README, Limitations).
+
+name: paybridge-p5
+
+x-postgres: &postgres
+  image: postgres:16
+  environment:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    POSTGRES_DB: paybridge
+  volumes:
+    - ./:/p5:ro
+    - ../portfolio-1-database-design:/p1:ro
+    - ../portfolio-2-query-optimisation:/p2:ro
+    - ../portfolio-3-transactions-concurrency:/p3:ro
+
+services:
+  pg-primary:
+    <<: *postgres
+    hostname: pg-primary
+    command: >
+      postgres
+        -c wal_level=replica
+        -c max_wal_senders=5
+        -c max_replication_slots=5
+        -c hot_standby=on
+        -c cluster_name=pg-primary
+    volumes:
+      - ./:/p5:ro
+      - ../portfolio-1-database-design:/p1:ro
+      - ../portfolio-2-query-optimisation:/p2:ro
+      - ../portfolio-3-transactions-concurrency:/p3:ro
+      - ./primary-init.sh:/docker-entrypoint-initdb.d/01-replication.sh:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-U", "postgres", "-d", "paybridge"]
+      interval: 2s
+      retries: 30
+
+  pg-replica:
+    <<: *postgres
+    hostname: pg-replica
+    depends_on:
+      pg-primary:
+        condition: service_healthy
+    entrypoint: ["bash", "/p5/replica-entrypoint.sh"]
+
+  mongo1: &mongo
+    image: mongo:7
+    hostname: mongo1
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - ./:/p5:ro
+  mongo2:
+    <<: *mongo
+    hostname: mongo2
+  mongo3:
+    <<: *mongo
+    hostname: mongo3

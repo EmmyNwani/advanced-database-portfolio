@@ -1,0 +1,35 @@
+=== Failover: the primary fails and the replica is promoted
+
+20:22:30  Last transfer id on the primary before it fails: 50004
+
+20:22:30  Stop the primary
+containers stopped: 1
+
+20:22:30  Replica: still a standby, so writes fail
+is_standby: true
+ERROR:  cannot execute SELECT FOR UPDATE in a read-only transaction
+CONTEXT:  SQL statement "SELECT *               FROM accounts WHERE account_id = LEAST(p_from, p_to)    FOR UPDATE"
+PL/pgSQL function transfer_funds(bigint,bigint,numeric) line 22 at SQL statement
+
+20:22:30  Replica: SELECT pg_promote()
+promoted: true
+is_standby: false
+
+20:22:31  New primary: transfer_funds(6, 9, 100.00)
+transfer 50029
+
+20:22:31  Transfer ids jump: the sequence is WAL-logged in batches of 32, so the replica resumes after the batch
+ transfer_id | from_account | to_account | amount |  status   
+-------------+--------------+------------+--------+-----------
+       50003 |            6 |          9 | 100.00 | COMPLETED
+       50004 |            6 |          9 | 200.00 | COMPLETED
+       50029 |            6 |          9 | 100.00 | COMPLETED
+(3 rows)
+
+
+20:22:31  New primary: every account still reconciles with the ledger (expect 0)
+ mismatched_accounts 
+---------------------
+                   0
+(1 row)
+

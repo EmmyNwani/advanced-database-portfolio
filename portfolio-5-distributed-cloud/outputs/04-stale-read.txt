@@ -1,0 +1,21 @@
+=== Asynchronous replication: a read from the replica can be stale
+
+20:22:19  Replica: pause WAL replay (simulates a replica that has fallen behind)
+replay paused: true
+
+20:22:19  Primary: transfer_funds(6, 9, 2500.00), committed and acknowledged to the client
+transfer 50002
+
+20:22:19  Account 9 read from each server
+primary: 1483344.54
+replica: 1480844.54   <- stale
+
+20:22:20  How far behind the replica is
+ received  | replayed  | bytes_not_applied |    behind_by    
+-----------+-----------+-------------------+-----------------
+ 0/8D11648 | 0/8D10D00 |              2376 | 00:00:02.586535
+(1 row)
+
+
+20:22:20  Replica: resume replay
+replica: 1483344.54   <- caught up

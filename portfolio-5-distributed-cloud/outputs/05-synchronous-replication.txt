@@ -1,0 +1,43 @@
+=== Synchronous replication: no stale commits, but writes depend on the replica
+
+20:22:20  Primary: synchronous_standby_names = 'replica1'
+ application_name | sync_state 
+------------------+------------
+ replica1         | sync
+(1 row)
+
+
+20:22:21  Primary: transfer_funds(6, 9, 100.00) with the replica up
+transfer 50003
+returned after 1 s
+
+20:22:22  Stop the replica (a network partition or crash)
+containers stopped: 1
+
+20:22:22  Primary: transfer_funds(6, 9, 200.00) in the background
+
+20:22:27  Primary, 5 seconds later: the session is still waiting for the replica
+ pid | state  | wait_event_type | wait_event |  waiting_for   
+-----+--------+-----------------+------------+----------------
+ 250 | active | IPC             | SyncRep    | 00:00:05.03505
+(1 row)
+
+
+20:22:27  Another session reads the latest transfer id: is the waiting transfer visible?
+ latest_visible_transfer 
+-------------------------
+                   50003
+(1 row)
+
+
+20:22:27  Start the replica again
+containers started: 1
+transfer 50004
+20:22:28  background transfer returned after 6 s
+
+20:22:28  Back to asynchronous replication
+ application_name | sync_state 
+------------------+------------
+ replica1         | async
+(1 row)
+

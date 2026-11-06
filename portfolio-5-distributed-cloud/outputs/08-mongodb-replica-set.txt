@@ -1,0 +1,32 @@
+=== MongoDB replica set rs0: mongo1 (priority 2), mongo2, mongo3
+rs.initiate ok: 1
+mongo1:27017  PRIMARY     up
+mongo2:27017  SECONDARY   up
+mongo3:27017  SECONDARY   up
+
+20:22:45  Write with w: 'majority' (acknowledged once 2 of 3 members have it)
+acknowledged: true
+
+20:22:47  Read the same document from a secondary (mongo3)
+documents on mongo3: 1
+
+20:22:47  Stop mongo3: 2 of 3 members remain, still a majority
+containers stopped: 1
+w: majority acknowledged: true
+
+20:22:51  Stop mongo2 as well: the primary can no longer reach a majority
+containers stopped: 1
+w: majority FAILED: WriteConcernFailed - waiting for replication timed out
+
+20:22:58  Wait for the primary to notice it has lost the majority
+mongo1:27017  SECONDARY   up
+mongo2:27017  (not reachable/healthy)DOWN
+mongo3:27017  (not reachable/healthy)DOWN
+any write FAILED: NotWritablePrimary
+reads still work: 3 documents
+
+20:23:03  Restart mongo2 and mongo3: a primary is elected again
+containers started: 2
+mongo1:27017  PRIMARY     up
+mongo2:27017  SECONDARY   up
+mongo3:27017  SECONDARY   up

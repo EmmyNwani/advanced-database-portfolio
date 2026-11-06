@@ -1,0 +1,21 @@
+=== Split brain: the old primary comes back without being fenced
+
+20:22:31  Start the old primary again
+containers started: 1
+old primary  is_standby: false
+new primary  is_standby: false
+
+20:22:32  A client still pointing at the old primary: transfer_funds(9, 6, 5000.00)
+old primary  transfer 50005
+
+20:22:32  A client using the new primary: transfer_funds(6, 9, 300.00)
+new primary  transfer 50030
+
+20:22:32  The two servers now disagree
+old primary  account 9: 1478644.54
+old primary  max transfer_id: 50005, total transfers: 50005
+new primary  account 9: 1484044.54
+new primary  max transfer_id: 50030, total transfers: 50006
+
+20:22:33  Fence the old primary (stop it); it would have to be rebuilt from the new primary
+containers stopped: 1

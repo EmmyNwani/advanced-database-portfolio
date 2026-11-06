@@ -1,0 +1,19 @@
+=== A transfer committed on the primary appears on the replica
+
+20:22:17  Before: account 9 on primary and replica
+primary: 1479844.54
+replica: 1479844.54
+
+20:22:17  Primary: transfer_funds(6, 9, 1000.00)
+transfer 50001
+primary WAL position after the commit: 0/8D10D00
+
+20:22:17  Replica, read straight away
+replica: 1480844.54  (replayed up to LSN 0/8D10D00)
+
+20:22:18  Replication lag reported by the primary
+ application_name | replay_lsn |    write_lag    |    flush_lag    |   replay_lag    
+------------------+------------+-----------------+-----------------+-----------------
+ replica1         | 0/8D10D00  | 00:00:00.000199 | 00:00:00.000508 | 00:00:00.000711
+(1 row)
+

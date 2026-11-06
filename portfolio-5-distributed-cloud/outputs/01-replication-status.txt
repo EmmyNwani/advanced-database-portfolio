@@ -1,0 +1,39 @@
+=== Replication status on the primary
+-[ RECORD 1 ]----+----------------
+pid              | 82
+usename          | replicator
+application_name | replica1
+client_addr      | 172.18.0.6
+state            | streaming
+sync_state       | async
+sent_lsn         | 0/8D10220
+write_lsn        | 0/8D10220
+flush_lsn        | 0/8D10220
+replay_lsn       | 0/8D10220
+write_lag        | 00:00:00.000084
+flush_lag        | 00:00:00.00025
+replay_lag       | 00:00:00.000313
+
+=== Replication slot on the primary (keeps WAL until the replica has it)
+ slot_name | slot_type | active | restart_lsn 
+-----------+-----------+--------+-------------
+ replica1  | physical  | t      | 0/8D10220
+(1 row)
+
+=== The replica's view
+ is_standby | received  | replayed  
+------------+-----------+-----------
+ t          | 0/8D10220 | 0/8D10220
+(1 row)
+
+  status   | sender_host | slot_name 
+-----------+-------------+-----------
+ streaming | pg-primary  | replica1
+(1 row)
+
+=== The primary's view of itself
+ is_standby | current_lsn 
+------------+-------------
+ f          | 0/8D10220
+(1 row)
+

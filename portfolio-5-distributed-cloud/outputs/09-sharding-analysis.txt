@@ -1,0 +1,24 @@
+=== 1. Hash sharding on customer_id: data per shard
+ shard | customers | accounts | transfers_sent | sent_in_oct_2026 
+-------+-----------+----------+----------------+------------------
+     0 |      6628 |     9917 |          16489 |             1947
+     1 |      6672 |     9930 |          16591 |             2032
+     2 |      6700 |    10153 |          16920 |             2001
+
+=== 2. Range sharding on join date: data per shard
+ shard |     joined      | customers | accounts | transfers_sent | sent_in_oct_2026 
+-------+-----------------+-----------+----------+----------------+------------------
+     0 | before Jul 2025 |      8013 |    12046 |          20026 |             1901
+     1 | Jul-Dec 2025    |      6099 |     9135 |          15240 |             1596
+     2 | from Jan 2026   |      5888 |     8819 |          14734 |             2483
+
+=== 3. Transfers whose two accounts are on different shards (hash on customer_id)
+ transfers | same_shard | cross_shard | cross_shard_pct 
+-----------+------------+-------------+-----------------
+     50000 |      16763 |       33237 |            66.5
+
+=== 4. Customers whose accounts would be split if the shard key were account_id instead
+ customers_with_several_accounts | split_across_shards 
+---------------------------------+---------------------
+                            7000 |                5344
+
