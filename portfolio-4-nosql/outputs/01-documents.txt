@@ -1,0 +1,238 @@
+=== Collections and document counts
+activity_events     171210
+customer_profiles   20000
+sessions            0
+
+=== activity_events by type and channel
+DEVICE_CHANGE  MOBILE     3025
+KYC_UPDATE     BRANCH    17985
+LOGIN          MOBILE    55377
+LOGIN          USSD      13794
+LOGIN          WEB       23003
+LOGIN_FAILED   MOBILE     4717
+LOGIN_FAILED   USSD       1164
+LOGIN_FAILED   WEB        2145
+TRANSFER       MOBILE    29840
+TRANSFER       USSD       7537
+TRANSFER       WEB       12623
+
+=== Which optional fields each event type carries (count of documents with the field)
+DEVICE_CHANGE  location=3025  old_device=3000  new_device=3025  verified_by=3025
+KYC_UPDATE     kyc=17985
+LOGIN          device=55377  browser=23003  ussd=13794  ip=78380  location=92174  mfa=55377
+LOGIN_FAILED   device=4717  browser=2145  ussd=1164  ip=6862  location=8026  failure_reason=8026
+TRANSFER       device=29840  browser=12623  ussd=7537  location=50000  transfer=50000  failure_reason=3617  reversal=1517
+
+=== One example of each shape
+
+--- TRANSFER via MOBILE
+{
+  _id: 'TRF-11',
+  ts: ISODate('2025-01-07T02:25:50.909Z'),
+  type: 'TRANSFER',
+  device: {
+    os: 'iOS',
+    model: 'iPhone 15',
+    app_version: '4.0.7'
+  },
+  channel: 'MOBILE',
+  location: {
+    city: 'Enugu',
+    state: 'Enugu'
+  },
+  transfer: {
+    amount: Decimal128('6717.93'),
+    status: 'COMPLETED',
+    currency: 'NGN',
+    to_account: 22172,
+    transfer_id: 11,
+    from_account: 12968
+  },
+  customer_id: 8689
+}
+
+--- TRANSFER via USSD (FAILED)
+{
+  _id: 'TRF-10',
+  ts: ISODate('2025-01-03T16:47:07.768Z'),
+  type: 'TRANSFER',
+  ussd: {
+    phone: '08000003999',
+    short_code: '*737#'
+  },
+  channel: 'USSD',
+  location: {
+    city: 'Enugu',
+    state: 'Enugu'
+  },
+  transfer: {
+    amount: Decimal128('4134.97'),
+    status: 'FAILED',
+    currency: 'NGN',
+    to_account: 147,
+    transfer_id: 10,
+    from_account: 5995
+  },
+  customer_id: 3999,
+  failure_reason: 'NETWORK_TIMEOUT'
+}
+
+--- TRANSFER (REVERSED)
+{
+  _id: 'TRF-6',
+  ts: ISODate('2024-12-20T03:36:10.026Z'),
+  type: 'TRANSFER',
+  browser: {
+    os: 'Android',
+    name: 'Firefox'
+  },
+  channel: 'WEB',
+  location: {
+    city: 'Ibadan',
+    state: 'Oyo'
+  },
+  reversal: {
+    reason: 'DISPUTED',
+    reversed_at: ISODate('2024-12-20T05:36:10.026Z')
+  },
+  transfer: {
+    amount: Decimal128('74311.16'),
+    status: 'REVERSED',
+    currency: 'NGN',
+    to_account: 27967,
+    transfer_id: 6,
+    from_account: 20487
+  },
+  customer_id: 13730
+}
+
+--- LOGIN via WEB
+{
+  _id: 'LGN-7',
+  ip: '102.89.197.73',
+  ts: ISODate('2026-02-22T20:52:51.442Z'),
+  type: 'LOGIN',
+  browser: {
+    os: 'macOS',
+    name: 'Safari'
+  },
+  channel: 'WEB',
+  location: {
+    city: 'Abuja',
+    state: 'FCT'
+  },
+  customer_id: 8738
+}
+
+--- LOGIN_FAILED via MOBILE
+{
+  _id: 'LGN-16',
+  ip: '102.89.29.49',
+  ts: ISODate('2026-08-06T05:52:19.982Z'),
+  type: 'LOGIN_FAILED',
+  device: {
+    os: 'Android',
+    model: 'Tecno Spark 20',
+    app_version: '4.2.1'
+  },
+  channel: 'MOBILE',
+  location: {
+    city: 'Abuja',
+    state: 'FCT'
+  },
+  customer_id: 9075,
+  failure_reason: 'ACCOUNT_LOCKED'
+}
+
+--- KYC_UPDATE (REJECTED)
+{
+  _id: 'KYC-25',
+  ts: ISODate('2026-03-07T19:30:09.439Z'),
+  kyc: {
+    document: {
+      type: 'BVN',
+      last4: '7975'
+    },
+    to_status: 'REJECTED',
+    from_status: 'PENDING',
+    reviewed_by: 'officer-02',
+    rejection_reason: 'NAME_MISMATCH'
+  },
+  type: 'KYC_UPDATE',
+  channel: 'BRANCH',
+  customer_id: 25
+}
+
+--- DEVICE_CHANGE
+{
+  _id: 'DEV-1',
+  ts: ISODate('2026-04-11T01:59:04.476Z'),
+  type: 'DEVICE_CHANGE',
+  channel: 'MOBILE',
+  location: {
+    city: 'Benin City',
+    state: 'Edo'
+  },
+  new_device: {
+    os: 'Android',
+    model: 'Tecno Spark 20',
+    app_version: '4.0.2'
+  },
+  old_device: {
+    os: 'Android',
+    model: 'Samsung A15',
+    app_version: '4.0.5'
+  },
+  customer_id: 86,
+  verified_by: 'OTP'
+}
+
+=== A customer profile: accounts and KYC history embedded, preferences optional
+{
+  _id: 4,
+  kyc: {
+    status: 'VERIFIED',
+    history: [
+      {
+        at: ISODate('2026-01-13T00:03:45.912Z'),
+        status: 'VERIFIED',
+        document: 'BVN',
+        reviewed_by: 'officer-05'
+      }
+    ]
+  },
+  contact: {
+    email: 'emeka.lawal4@example.com',
+    phone: '08000000004'
+  },
+  accounts: [
+    {
+      type: 'SAVINGS',
+      status: 'ACTIVE',
+      balance: Decimal128('1398590.35'),
+      currency: 'NGN',
+      opened_at: ISODate('2026-02-01T13:46:15.900Z'),
+      account_id: 5,
+      account_no: '3000000005'
+    }
+  ],
+  full_name: 'Emeka Lawal',
+  joined_at: ISODate('2026-01-08T00:03:45.912Z'),
+  preferences: {
+    alerts: {
+      sms: true,
+      email: true
+    },
+    language: 'yo'
+  },
+  balance_as_of: ISODate('2026-11-06T01:22:07.130Z')
+}
+
+--- Profiles with and without the optional preferences field
+with preferences:    5000
+without preferences: 15000
+
+--- Profiles by number of embedded accounts
+1 account(s): 13000 customers
+2 account(s): 4000 customers
+3 account(s): 3000 customers

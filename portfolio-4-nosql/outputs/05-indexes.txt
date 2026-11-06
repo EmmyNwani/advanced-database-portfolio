@@ -1,0 +1,36 @@
+=== Q1: customer timeline  find({customer_id: 800}).sort({ts: -1}).limit(10)
+before  plan: SORT <- COLLSCAN
+        returned 10, keys examined 0, documents examined 171210, time 39 ms
+        index created: customer_ts
+after   plan: LIMIT <- FETCH <- IXSCAN(customer_ts)
+        returned 10, keys examined 10, documents examined 10, time 0 ms
+
+=== Q2: failed logins in October 2026  find({type: 'LOGIN_FAILED', ts: {$gte, $lt}})
+before  plan: COLLSCAN
+        returned 863, keys examined 0, documents examined 171210, time 35 ms
+        index created: type_ts
+after   plan: FETCH <- IXSCAN(type_ts)
+        returned 863, keys examined 863, documents examined 863, time 0 ms
+
+=== Q3: owner of an account  find({'accounts.account_id': 23243})
+before  plan: COLLSCAN
+        returned 1, keys examined 0, documents examined 20000, time 8 ms
+        index created: account_id
+after   plan: FETCH <- IXSCAN(account_id)
+        returned 1, keys examined 1, documents examined 1, time 0 ms
+
+=== Does Q1's index also serve Q4 (customer's events of one type)?
+Q4      plan: FETCH <- IXSCAN(customer_ts)
+        returned 8, keys examined 24, documents examined 24, time 0 ms
+
+=== Index sizes (bytes)
+activity_events: documents 171210, data 45239229, storage 4096
+  _id_        1241088
+  customer_ts 2236416
+  type_ts     1957888
+customer_profiles: documents 20000, data 10877218, storage 4096
+  _id_        4096
+  account_id  282624
+
+=== Multikey: the account_id index has one entry per embedded account
+index account_id, isMultiKey: true, multiKeyPaths: {"accounts.account_id":["accounts"]}

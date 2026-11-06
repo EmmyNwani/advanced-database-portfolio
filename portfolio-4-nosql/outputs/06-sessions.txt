@@ -1,0 +1,24 @@
+=== TTL index
+{
+  v: 2,
+  key: {
+    expires_at: 1
+  },
+  name: 'ttl_expires_at',
+  expireAfterSeconds: 0
+}
+
+=== GET by key: one lookup on the _id index
+{
+  _id: 'tok-7f3a9c',
+  customer_id: 800,
+  channel: 'MOBILE',
+  created_at: ISODate('2026-11-06T01:22:14.160Z'),
+  expires_at: ISODate('2026-11-06T01:22:19.160Z')
+}
+plan: IDHACK, documents examined 1
+
+=== Two sessions expire after 5 seconds, one after an hour. Waiting for the TTL monitor...
+0 s: 3 sessions
+45 s: 1 session(s) left: tok-c90d17
+The expired sessions were deleted by the database itself; no clean-up job was needed.

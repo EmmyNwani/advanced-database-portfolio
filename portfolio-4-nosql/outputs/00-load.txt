@@ -1,0 +1,5 @@
+Waiting for MongoDB...
+MongoDB 7.0.45
+Collections: activity_events, customer_profiles, sessions
+activity_events:   171210
+customer_profiles: 20000

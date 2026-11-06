@@ -1,0 +1,80 @@
+=== Validator on activity_events
+{
+  '$jsonSchema': {
+    bsonType: 'object',
+    required: [
+      'type',
+      'customer_id',
+      'ts',
+      'channel'
+    ],
+    properties: {
+      type: {
+        enum: [
+          'TRANSFER',
+          'LOGIN',
+          'LOGIN_FAILED',
+          'KYC_UPDATE',
+          'DEVICE_CHANGE'
+        ],
+        description: 'one of the known event types'
+      },
+      customer_id: {
+        bsonType: [
+          'int',
+          'long'
+        ],
+        minimum: 1
+      },
+      ts: {
+        bsonType: 'date'
+      },
+      channel: {
+        enum: [
+          'MOBILE',
+          'WEB',
+          'USSD',
+          'BRANCH'
+        ]
+      },
+      transfer: {
+        bsonType: 'object',
+        required: [
+          'transfer_id',
+          'amount',
+          'status'
+        ],
+        properties: {
+          amount: {
+            bsonType: 'decimal'
+          }
+        }
+      }
+    }
+  }
+}
+
+--- A new field nobody planned for (biometric login with a face-match score)
+ACCEPTED: DEMO-1
+
+--- Missing the timestamp
+REJECTED: Document failed validation
+  rules not satisfied: [{"operatorName":"required","specifiedAs":{"required":["type","customer_id","ts","channel"]},"missingProperties":["ts"]}]
+
+--- Unknown event type
+REJECTED: Document failed validation
+  rules not satisfied: [{"operatorName":"properties","propertiesNotSatisfied":[{"propertyName":"type","description":"one of the known event types","details":[{"operatorName":"enum","specifiedAs":{"enum":["TRANSFER","LOGIN","LOGIN_FAILED","KYC_UPDATE","DEVICE_CHANGE"]},"reason":"value was not found in enum","consideredValue":"PASSWORD_RESET"}]}]}]
+
+--- Transfer amount stored as a floating-point number instead of Decimal128
+REJECTED: Document failed validation
+  rules not satisfied: [{"operatorName":"properties","propertiesNotSatisfied":[{"propertyName":"transfer","details":[{"operatorName":"properties","propertiesNotSatisfied":[{"propertyName":"amount","details":[{"operatorName":"bsonType","specifiedAs":{"bsonType":"decimal"},"reason":"type did not match","consideredValue":1000.1,"consideredType":"double"}]}]}]}]}]
+
+--- The same transfer with the amount as Decimal128
+ACCEPTED: DEMO-5
+
+=== Why Decimal128 matters for money
+double:     0.1 + 0.2 = 0.30000000000000004
+Decimal128: 0.1 + 0.2 = 0.3
+
+=== Clean up the demo documents
+deleted: 2

@@ -1,0 +1,121 @@
+=== Q1: activity timeline for customer 800 (latest 10 events, selected fields)
+{"ts":"2026-10-20T03:40:00.000Z","type":"DEVICE_CHANGE","channel":"MOBILE","location":{"city":"Unknown"}}
+{"ts":"2026-10-20T03:32:00.000Z","type":"LOGIN_FAILED","channel":"WEB","location":{"city":"Unknown"},"failure_reason":"WRONG_PASSWORD"}
+{"ts":"2026-10-20T03:28:00.000Z","type":"LOGIN_FAILED","channel":"WEB","location":{"city":"Unknown"},"failure_reason":"WRONG_PASSWORD"}
+{"ts":"2026-10-20T03:24:00.000Z","type":"LOGIN_FAILED","channel":"WEB","location":{"city":"Unknown"},"failure_reason":"WRONG_PASSWORD"}
+{"ts":"2026-10-20T03:20:00.000Z","type":"LOGIN_FAILED","channel":"WEB","location":{"city":"Unknown"},"failure_reason":"WRONG_PASSWORD"}
+{"ts":"2026-10-20T03:16:00.000Z","type":"LOGIN_FAILED","channel":"WEB","location":{"city":"Unknown"},"failure_reason":"WRONG_PASSWORD"}
+{"ts":"2026-10-20T03:12:00.000Z","type":"LOGIN_FAILED","channel":"WEB","location":{"city":"Unknown"},"failure_reason":"WRONG_PASSWORD"}
+{"ts":"2026-10-20T03:08:00.000Z","type":"LOGIN_FAILED","channel":"WEB","location":{"city":"Unknown"},"failure_reason":"WRONG_PASSWORD"}
+{"ts":"2026-10-20T03:04:00.000Z","type":"LOGIN_FAILED","channel":"WEB","location":{"city":"Unknown"},"failure_reason":"WRONG_PASSWORD"}
+{"ts":"2026-09-18T14:40:55.059Z","type":"TRANSFER","channel":"WEB","location":{"city":"Benin City"},"transfer":{"amount":{"$numberDecimal":"45441.04"},"status":"COMPLETED"}}
+
+=== Q2: the profile screen, one read by _id, no joins
+{
+  _id: 800,
+  kyc: {
+    status: 'VERIFIED'
+  },
+  accounts: [
+    {
+      type: 'SAVINGS',
+      status: 'ACTIVE',
+      balance: Decimal128('883210.46'),
+      currency: 'NGN',
+      opened_at: ISODate('2026-03-02T09:27:49.064Z'),
+      account_id: 1224,
+      account_no: '3000001224'
+    },
+    {
+      type: 'SAVINGS',
+      status: 'ACTIVE',
+      balance: Decimal128('444063.67'),
+      currency: 'NGN',
+      opened_at: ISODate('2026-03-13T04:50:10.133Z'),
+      account_id: 1225,
+      account_no: '3000001225'
+    }
+  ],
+  full_name: 'Tunde Abubakar'
+}
+
+=== Q3: who owns account 23243? (query inside the embedded accounts array)
+{
+  _id: 15522,
+  accounts: [
+    {
+      type: 'CURRENT',
+      status: 'ACTIVE',
+      balance: Decimal128('742520.39'),
+      currency: 'NGN',
+      opened_at: ISODate('2026-07-08T19:31:46.933Z'),
+      account_id: 23243,
+      account_no: '3000023243'
+    }
+  ],
+  full_name: 'Aisha Adeyemi'
+}
+
+=== Q4: customers holding a FROZEN CURRENT account ($elemMatch: both conditions on the same account)
+with $elemMatch:    269
+without $elemMatch: 420  (also matches a customer with a CURRENT account and a different, FROZEN account)
+
+=== Q5: mobile logins on Android app versions older than 4.1 in October 2026 (nested field)
+1148 logins
+
+=== U1: a REJECTED customer is re-verified: change status and append to the embedded history
+customer 9 before:
+{
+  kyc: {
+    status: 'REJECTED',
+    history: [
+      {
+        at: ISODate('2025-09-12T17:40:19.128Z'),
+        status: 'REJECTED',
+        document: 'NIN',
+        reviewed_by: 'officer-10',
+        rejection_reason: 'DOCUMENT_EXPIRED'
+      }
+    ]
+  }
+}
+matched 1, modified 1; after:
+{
+  kyc: {
+    status: 'VERIFIED',
+    history: [
+      {
+        at: ISODate('2025-09-12T17:40:19.128Z'),
+        status: 'REJECTED',
+        document: 'NIN',
+        reviewed_by: 'officer-10',
+        rejection_reason: 'DOCUMENT_EXPIRED'
+      },
+      {
+        status: 'VERIFIED',
+        at: ISODate('2026-11-02T10:00:00.000Z'),
+        document: 'NIN',
+        reviewed_by: 'officer-07'
+      }
+    ]
+  }
+}
+
+=== U2: freeze one embedded account with the positional $ operator
+matched 1, modified 1
+{
+  _id: 15522,
+  accounts: [
+    {
+      type: 'CURRENT',
+      status: 'FROZEN',
+      balance: Decimal128('742520.39'),
+      currency: 'NGN',
+      opened_at: ISODate('2026-07-08T19:31:46.933Z'),
+      account_id: 23243,
+      account_no: '3000023243'
+    }
+  ]
+}
+Note: this changes only the profile copy. The account's real status lives in PostgreSQL;
+in production the change would be made there first and propagated to the profile.

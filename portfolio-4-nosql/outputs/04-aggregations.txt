@@ -1,0 +1,56 @@
+=== A1: login failure rate by channel (all time)
+{"_id":"MOBILE","attempts":60094,"failed":4717,"failure_rate_pct":7.85}
+{"_id":"USSD","attempts":14958,"failed":1164,"failure_rate_pct":7.78}
+{"_id":"WEB","attempts":25148,"failed":2145,"failure_rate_pct":8.53}
+
+=== A2: transfers by channel: count, value and failure rate (amounts summed as Decimal128)
+{"_id":"MOBILE","transfers":29840,"total_value":{"$numberDecimal":"1509183731.44"},"average":{"$numberDecimal":"50575.86"},"failed_pct":7.28}
+{"_id":"WEB","transfers":12623,"total_value":{"$numberDecimal":"639310019.71"},"average":{"$numberDecimal":"50646.44"},"failed_pct":7.02}
+{"_id":"USSD","transfers":7537,"total_value":{"$numberDecimal":"378460088.70"},"average":{"$numberDecimal":"50213.62"},"failed_pct":7.42}
+
+=== A3: failed transfers by reason and channel, October 2026
+{"_id":{"reason":"INSUFFICIENT_FUNDS","channel":"MOBILE"},"n":75}
+{"_id":{"reason":"INSUFFICIENT_FUNDS","channel":"USSD"},"n":18}
+{"_id":{"reason":"INSUFFICIENT_FUNDS","channel":"WEB"},"n":33}
+{"_id":{"reason":"LIMIT_EXCEEDED","channel":"MOBILE"},"n":69}
+{"_id":{"reason":"LIMIT_EXCEEDED","channel":"USSD"},"n":23}
+{"_id":{"reason":"LIMIT_EXCEEDED","channel":"WEB"},"n":29}
+{"_id":{"reason":"NETWORK_TIMEOUT","channel":"MOBILE"},"n":86}
+{"_id":{"reason":"NETWORK_TIMEOUT","channel":"USSD"},"n":17}
+{"_id":{"reason":"NETWORK_TIMEOUT","channel":"WEB"},"n":38}
+
+=== A4: possible account takeover: 5 or more failed logins in one hour, October 2026,
+    with the customer's name ($lookup to profiles) and any device change within 2 hours
+{"failures":8,"ips":["185.220.101.1"],"customer_id":800,"name":"Tunde Abubakar","hour":"2026-10-20T03:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.2"],"customer_id":1600,"name":"Funmi Ojo","hour":"2026-10-20T04:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.3"],"customer_id":2400,"name":"Funmi Okonkwo","hour":"2026-10-20T05:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.4"],"customer_id":3200,"name":"Amaka Ibe","hour":"2026-10-20T06:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.5"],"customer_id":4000,"name":"Tunde Bello","hour":"2026-10-20T07:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.6"],"customer_id":4800,"name":"Ngozi Eze","hour":"2026-10-20T08:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.7"],"customer_id":5600,"name":"Ngozi Lawal","hour":"2026-10-20T09:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.8"],"customer_id":6400,"name":"Segun Lawal","hour":"2026-10-20T10:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.9"],"customer_id":7200,"name":"Funmi Lawal","hour":"2026-10-20T11:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.10"],"customer_id":8000,"name":"Chinedu Okafor","hour":"2026-10-20T12:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.11"],"customer_id":8800,"name":"Aisha Okonkwo","hour":"2026-10-20T13:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.12"],"customer_id":9600,"name":"Chinedu Adeyemi","hour":"2026-10-20T14:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.13"],"customer_id":10400,"name":"Musa Abubakar","hour":"2026-10-20T15:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.14"],"customer_id":11200,"name":"Tunde Lawal","hour":"2026-10-20T16:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.15"],"customer_id":12000,"name":"Ngozi Danjuma","hour":"2026-10-20T17:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.16"],"customer_id":12800,"name":"Funmi Danjuma","hour":"2026-10-20T18:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.17"],"customer_id":13600,"name":"Tunde Bello","hour":"2026-10-20T19:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.18"],"customer_id":14400,"name":"Ibrahim Adeyemi","hour":"2026-10-20T20:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.19"],"customer_id":15200,"name":"Segun Eze","hour":"2026-10-20T21:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.20"],"customer_id":16000,"name":"Emeka Okonkwo","hour":"2026-10-20T22:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.21"],"customer_id":16800,"name":"Ngozi Okafor","hour":"2026-10-20T23:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.22"],"customer_id":17600,"name":"Chinedu Nwosu","hour":"2026-10-21T00:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.23"],"customer_id":18400,"name":"Emeka Adeyemi","hour":"2026-10-21T01:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.24"],"customer_id":19200,"name":"Segun Lawal","hour":"2026-10-21T02:00:00.000Z","device_changed_after":true}
+{"failures":8,"ips":["185.220.101.25"],"customer_id":20000,"name":"Funmi Okonkwo","hour":"2026-10-21T03:00:00.000Z","device_changed_after":true}
+
+=== A5: accounts and balances by customer KYC status and account type ($unwind over the embedded array)
+{"_id":{"kyc":"PENDING","type":"CURRENT"},"accounts":933,"balance":{"$numberDecimal":"1176300254.55"}}
+{"_id":{"kyc":"PENDING","type":"SAVINGS"},"accounts":2083,"balance":{"$numberDecimal":"2589440117.64"}}
+{"_id":{"kyc":"REJECTED","type":"CURRENT"},"accounts":480,"balance":{"$numberDecimal":"588691990.35"}}
+{"_id":{"kyc":"REJECTED","type":"SAVINGS"},"accounts":1121,"balance":{"$numberDecimal":"1367103542.60"}}
+{"_id":{"kyc":"VERIFIED","type":"CURRENT"},"accounts":7649,"balance":{"$numberDecimal":"9511988277.16"}}
+{"_id":{"kyc":"VERIFIED","type":"SAVINGS"},"accounts":17734,"balance":{"$numberDecimal":"21953283895.47"}}
