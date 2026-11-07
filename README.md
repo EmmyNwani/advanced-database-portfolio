@@ -97,6 +97,12 @@ docker exec -i pg-bank psql -U postgres -d paybridge \
 
 Then follow the README inside each portfolio folder. Do not commit passwords; use a placeholder or an ignored `.env` file.
 
+### Submission packaging
+
+The recording below shows the repository being cloned fresh from GitHub to confirm it is complete, then copied to `Nwani_Ugochukwu_301930571` with the summary PDF added, and zipped with the `.git` folder included and `.DS_Store` files excluded.
+
+![Cloning, copying and zipping the submission folder](screenshots/01-packaging.gif)
+
 ## 6. Technical reflection
 
 ### Why ACID for the ledger
